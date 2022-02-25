@@ -1,0 +1,6 @@
+title:                  HPC lesion at 8d
+
+include:                ns_common.inc
+
+hpcLesionTime:          8::00
+

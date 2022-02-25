@@ -1,0 +1,730 @@
+
+ns/NsPattern.hh,100
+#define NS_PATTERN_HH2,22
+typedef vector<uint> NsPattern;9,184
+inline string patternToStr(14,285
+
+ns/NsSystem.cc,784
+NsSystem::NsSystem(7,74
+void NsSystem::addLayer(19,400
+void NsSystem::addTract(32,716
+void NsSystem::addBiTract(54,1359
+void NsSystem::calcRates(64,1629
+void NsSystem::acquire(74,1778
+void NsSystem::settle(86,2116
+void NsSystem::consolidate(108,2693
+void NsSystem::maintain(155,3595
+void NsSystem::clear(168,3808
+void NsSystem::setFrozen(179,3973
+void NsSystem::lesion(188,4134
+void NsSystem::runBackgroundProcesses(197,4307
+void NsSystem::retrieve(207,4524
+void NsSystem::test(234,5277
+void NsSystem::train(258,5822
+void NsSystem::reactivate(267,6026
+void NsSystem::togglePsi(301,7038
+void NsSystem::printStateHdrs(311,7295
+void NsSystem::printState(320,7499
+void NsSystem::printGrids(330,7672
+void NsSystem::printSize(338,7857
+string NsSystem::toStr(358,8334
+
+ns/NsGlobals.cc,61
+Props props;6,90
+uint  simTime;7,103
+uint  timeStep;8,118
+
+ns/columns.cc,344
+using std::string;13,181
+const int NONE 19,268
+const int INT 20,304
+const int UINT 21,339
+const int DBLE 22,375
+const int STR 23,411
+bool   help 25,447
+static const char *fname fname27,480
+static const char *sepChars sepChars28,537
+static const char *osep osep29,604
+static bool tabular 30,661
+void fail(40,900
+int main(48,1121
+
+ns/NsGlobals.hh,27
+#define NS_GLOBALS_HH2,22
+
+ns/NsLayer.cc,820
+NsLayer::NsLayer(8,94
+void NsLayer::makePattern(32,917
+void NsLayer::setPattern(50,1502
+void NsLayer::setPattern(60,1678
+void NsLayer::clearPatterns(65,1772
+const string &NsLayer::setRandomPattern(NsLayer::setRandomPattern74,1938
+void NsLayer::clear(83,2174
+void NsLayer::adjustInhibition(94,2372
+void NsLayer::randomize(114,2938
+void NsLayer::computeNewActivations(125,3150
+void NsLayer::applyNewActivations(138,3391
+void NsLayer::setFrozen(148,3579
+void NsLayer::lesion(159,3749
+void NsLayer::maintain(166,3822
+uint NsLayer::getNumActive(173,3907
+void NsLayer::printState(184,4087
+uint NsLayer::getNumHits(197,4333
+void NsLayer::printScoreHdr(207,4554
+void NsLayer::printNumActiveHdr(212,4656
+void NsLayer::printNumActive(217,4739
+void NsLayer::printGrid(222,4847
+string NsLayer::toStr(254,5953
+
+ns/NsUnit.cc,308
+NsUnit::NsUnit(5,68
+bool NsUnit::activationFunction(20,494
+void NsUnit::computeNewActivation(42,1204
+void NsUnit::applyNewActivation(75,2282
+void NsUnit::setFrozen(80,2349
+void NsUnit::maintain(88,2463
+void NsUnit::printStateHdr(92,2492
+void NsUnit::printState(97,2566
+string NsUnit::toStr(102,2678
+
+ns/mat.cc,185
+void fail(26,695
+static const char *sepChars sepChars34,916
+static const char *prefix prefix35,953
+static const char *suffix suffix36,985
+string adorn(41,1077
+int main(65,1517
+
+ns/props/ns_common.inc,2562
+minPsdSize:minPsdSize3,26
+maxPsdSize:maxPsdSize4,92
+minNumCiAmpars:minNumCiAmpars6,125
+minNumCpAmpars:minNumCpAmpars7,191
+potProbK:potProbK9,258
+potProbHalf:potProbHalf10,336
+actFuncK:actFuncK14,428
+actThreshold:actThreshold15,458
+minInhibition:minInhibition19,510
+maxInhibition:maxInhibition20,540
+initInhibition:initInhibition21,569
+inhibIncr:inhibIncr22,597
+orthogonalPatterns:orthogonalPatterns23,628
+W:W25,660
+H:H26,688
+K:K27,716
+hpc.width:hpc.width29,746
+hpc.height:hpc.height30,774
+hpc.k:hpc.k31,802
+acc.width:acc.width33,869
+acc.height:acc.height34,897
+acc.k:acc.k35,925
+sc0.width:sc0.width37,954
+sc0.height:sc0.height38,982
+sc0.k:sc0.k39,1010
+sc1.width:sc1.width41,1039
+sc1.height:sc1.height42,1067
+sc1.k:sc1.k43,1095
+cpAmparRemovalRate01h:cpAmparRemovalRate01h47,1157
+ciAmparInsertionRate01h:ciAmparInsertionRate01h48,1205
+ciAmparRemovalRate24h:ciAmparRemovalRate24h49,1276
+psdDecayRate24h:psdDecayRate24h50,1331
+e3DecayRate24h:e3DecayRate24h51,1409
+maxE3DepotProb01h:maxE3DepotProb01h52,1442
+maxPotProb01h:maxPotProb01h53,1520
+hpc.AcqLearnRate:hpc.AcqLearnRate57,1626
+hpc.ConsLearnRate24h:hpc.ConsLearnRate24h58,1659
+hpc.psdDecayRate24h:hpc.psdDecayRate24h59,1692
+hpc.cpAmparRemovalRate01h:hpc.cpAmparRemovalRate01h60,1737
+hpc.ciAmparInsertionRate01h:hpc.ciAmparInsertionRate01h61,1788
+hpc.ciAmparRemovalRate24h:hpc.ciAmparRemovalRate24h62,1841
+hpc.BaseDepotProb01h:hpc.BaseDepotProb01h63,1892
+hpc.reactE3Level:hpc.reactE3Level64,1966
+hpc.e3DecayRate24h:hpc.e3DecayRate24h65,1999
+hpc.maxE3DepotProb01h:hpc.maxE3DepotProb01h66,2043
+hpc.maxPotProb01h:hpc.maxPotProb01h67,2090
+nc.AcqLearnRate:nc.AcqLearnRate71,2165
+nc.ConsLearnRate24h:nc.ConsLearnRate24h72,2199
+nc.psdDecayRate24h:nc.psdDecayRate24h73,2233
+nc.cpAmparRemovalRate01h:nc.cpAmparRemovalRate01h74,2278
+nc.ciAmparInsertionRate01h:nc.ciAmparInsertionRate01h75,2329
+nc.ciAmparRemovalRate24h:nc.ciAmparRemovalRate24h76,2382
+nc.BaseDepotProb01h:nc.BaseDepotProb01h77,2433
+nc.reactE3Level:nc.reactE3Level78,2505
+nc.e3DecayRate24h:nc.e3DecayRate24h79,2538
+nc.maxE3DepotProb01h:nc.maxE3DepotProb01h80,2582
+nc.maxPotProb01h:nc.maxPotProb01h81,2629
+stopTime:stopTime85,2696
+trainNumStimCycles:trainNumStimCycles87,2746
+consNumStimCycles:consNumStimCycles88,2778
+reactNumStimCycles:reactNumStimCycles89,2810
+numSettleCycles:numSettleCycles90,2842
+timeStepChanges:timeStepChanges91,2874
+numBackgroundPatterns:numBackgroundPatterns93,2950
+printPatterns:printPatterns96,3000
+
+ns/NsSystem.hh,1128
+#define NS_SYSTEM_HH2,21
+using std::unordered_map;5,68
+static const string hpcLayerId 16,229
+static const string accLayerId 17,269
+static const string sc0LayerId 18,309
+static const string sc1LayerId 19,349
+static const string hpcTractTypeId 21,390
+static const string ncTractTypeId 22,434
+static const string hpcLayerTypeId 24,478
+static const string ncLayerTypeId 25,522
+void infoTrace(32,678
+void info1Trace(44,943
+void debugTrace(56,1210
+class NsSystem 64,1365
+    NsSystem(NsSystem::NsSystem66,1390
+    NsLayer *getLayer(NsSystem::getLayer102,2590
+    NsTract *getTract(NsSystem::getTract103,2656
+    unordered_map<NsSystem::unordered_map108,2813
+    unordered_map<string, NsLayer *> layers;NsSystem::layers108,2813
+    unordered_map<NsSystem::unordered_map109,2858
+    unordered_map<string, NsTract *> tracts;NsSystem::tracts109,2858
+    uint trainNumStimCycles;NsSystem::trainNumStimCycles111,2904
+    uint consNumStimCycles;NsSystem::consNumStimCycles112,2933
+    uint reactNumStimCycles;NsSystem::reactNumStimCycles113,2961
+    uint numSettleCycles;NsSystem::numSettleCycles114,2990
+
+ns/NsLayer.hh,1372
+#define NS_LAYER_HH2,20
+using std::vector;8,100
+using std::string;9,119
+class NsLayer 15,186
+    void saveInhibition(NsLayer::saveInhibition39,944
+    void restoreInhibition(NsLayer::restoreInhibition40,1004
+    const string id;NsLayer::id43,1135
+    const string type;NsLayer::type44,1156
+    const uint width;NsLayer::width45,1179
+    const uint height;NsLayer::height46,1201
+    const double k;NsLayer::k47,1224
+    const double minInhibition;NsLayer::minInhibition48,1244
+    const double maxInhibition;NsLayer::maxInhibition49,1276
+    const double initInhibition;NsLayer::initInhibition50,1308
+    const double inhibIncr;NsLayer::inhibIncr51,1341
+    double inhibition;NsLayer::inhibition52,1369
+    double savedInhibition;NsLayer::savedInhibition53,1392
+    bool isClamped;NsLayer::isClamped54,1420
+    bool isFrozen;NsLayer::isFrozen55,1440
+    bool isLesioned;NsLayer::isLesioned56,1459
+    vector<NsUnit *> units;NsLayer::units57,1480
+    bool orthogonalPatterns;NsLayer::orthogonalPatterns58,1508
+    uint nextPatternUnit;NsLayer::nextPatternUnit59,1537
+    unordered_map<NsLayer::unordered_map60,1563
+    unordered_map<string, NsPattern> definedPatterns;NsLayer::definedPatterns60,1563
+    vector<string> definedPatternIds;NsLayer::definedPatternIds61,1617
+    bool printPatterns;NsLayer::printPatterns62,1655
+
+ns/NsConnection.cc,731
+NsConnection::NsConnection(10,117
+double NsConnection::minPsdSize;30,658
+double NsConnection::maxPsdSize;31,691
+double NsConnection::minNumCiAmpars;32,724
+double NsConnection::minNumCpAmpars;33,761
+double NsConnection::potProbK;34,798
+double NsConnection::potProbHalf;35,829
+bool NsConnection::initializeStatics(46,1283
+void NsConnection::potentiate(65,1915
+void NsConnection::depotentiate(78,2223
+void NsConnection::amparTrafficking(93,2646
+void NsConnection::reactivate(124,3729
+void NsConnection::stimulate(138,3945
+void NsConnection::learn(152,4411
+double  NsConnection::getStrength(183,5534
+void NsConnection::printStateHdr(188,5642
+void NsConnection::printState(193,5764
+string NsConnection::toStr(200,5969
+
+ns/NsConnection.hh,1340
+#define NS_CONNECTION_HH2,25
+class NsConnection 10,131
+    bool forceStaticInit;NsConnection::forceStaticInit12,161
+    void togglePsi(NsConnection::togglePsi22,578
+    bool isHebbian(NsConnection::isHebbian27,781
+    bool isPotentiated;NsConnection::isPotentiated29,860
+    const NsUnit *fromUnit;NsConnection::fromUnit30,884
+    NsUnit *toUnit;NsConnection::toUnit31,912
+    void setNumCiAmpars(NsConnection::setNumCiAmpars37,1011
+    void setNumCpAmpars(NsConnection::setNumCpAmpars45,1267
+    const  NsTract *tract;NsConnection::tract55,1595
+    const  string  id;NsConnection::id56,1622
+    double         psdSize;NsConnection::psdSize57,1645
+    double         numCiAmpars;NsConnection::numCiAmpars58,1673
+    double         numCpAmpars;NsConnection::numCpAmpars59,1705
+    bool           psiIsOn;NsConnection::psiIsOn60,1737
+    bool           staticsInitialized;NsConnection::staticsInitialized61,1765
+    static double  minPsdSize;NsConnection::minPsdSize63,1805
+    static double  maxPsdSize;NsConnection::maxPsdSize64,1836
+    static double  minNumCiAmpars;NsConnection::minNumCiAmpars65,1867
+    static double  minNumCpAmpars;NsConnection::minNumCpAmpars66,1902
+    static double  potProbK;NsConnection::potProbK67,1937
+    static double  potProbHalf;NsConnection::potProbHalf69,2074
+
+ns/NsUnit.hh,512
+#define NS_UNIT_HH2,19
+using std::string;7,78
+class NsUnit 12,134
+    const NsLayer *layer;NsUnit::layer24,496
+    const string id;NsUnit::id25,522
+    double actFuncK;NsUnit::actFuncK26,543
+    double actThreshold;NsUnit::actThreshold27,564
+    bool isFrozen;NsUnit::isFrozen28,589
+    bool isActive;NsUnit::isActive29,608
+    bool newIsActive;NsUnit::newIsActive30,627
+    double lastNetInput;NsUnit::lastNetInput31,649
+    vector<NsConnection *> inConnections;NsUnit::inConnections32,674
+
+ns/NsMain.cc,1763
+using std::vector;2,18
+static NsSystem *nsSystem;nsSystem13,167
+static uint stopTime;15,195
+static uint numBackgroundPatterns;16,230
+static void printSystem(22,417
+static void buildSystem(35,694
+static uint dhToH(54,1386
+struct TimeStepChangeData 75,1970
+    uint timeStep;TimeStepChangeData::timeStep76,1998
+static void changeTimeStep(82,2082
+struct ReactivateData 97,2423
+static void reactivate(107,2632
+struct FreezeData 120,2901
+    FreezeData(FreezeData::FreezeData121,2921
+    const string &layerId;FreezeData::layerId124,3019
+    bool state;FreezeData::state125,3046
+static void setFrozen(135,3254
+struct LesionData 152,3614
+    LesionData(LesionData::LesionData153,3634
+    const string &layerId;LesionData::layerId156,3706
+static void lesion(166,3916
+struct PsiData 182,4207
+    string layerId;PsiData::layerId183,4224
+    bool state;PsiData::state184,4244
+    PsiData(PsiData::PsiData185,4260
+static void togglePsi(197,4563
+void schedulePsiEvents(214,5039
+static void scheduleEvents(227,5380
+static void presentPattern(310,8311
+static void iterate(330,8887
+void test(341,9154
+static void run(367,9810
+const int NONE 410,10712
+const int INT 411,10748
+const int UINT 412,10783
+const int DBLE 413,10819
+const int STR 414,10855
+bool   help 416,10891
+const char *traceLevel traceLevel417,10923
+const char *traceTags traceTags418,10961
+char *pname;pname420,11000
+vector<Util::ParseOptSpec> optSpecs 421,11013
+vector<string>nonFlags nonFlags426,11287
+static const char *syntax(syntax431,11430
+int main(439,11555
+    typedef struct { string name;::name459,12079
+    typedef struct { string name; string value;::value459,12079
+    typedef struct { string name; string value; } NameValue;459,12079
+
+ns/NsTract.hh,1869
+#define NS_TRACT_HH2,20
+using std::vector;7,99
+using std::string;8,118
+class NsTract 14,209
+    string id;NsTract::id36,914
+    vector<NsConnection *> connections;NsTract::connections37,929
+    string type;NsTract::type38,969
+    NsLayer *fromLayer;NsTract::fromLayer39,986
+    NsLayer *toLayer;NsTract::toLayer40,1010
+    double e3Level;NsTract::e3Level42,1033
+    double reactE3Level;NsTract::reactE3Level43,1092
+    double lastE3Level;NsTract::lastE3Level47,1208
+    uint   lastTimeStep;NsTract::lastTimeStep48,1232
+    double depotProb;NsTract::depotProb53,1380
+    double acqLearnRate;NsTract::acqLearnRate58,1497
+    double consLearnRate;NsTract::consLearnRate63,1678
+    double psdDecayRate;NsTract::psdDecayRate64,1704
+    double cpAmparRemovalRate;NsTract::cpAmparRemovalRate65,1729
+    double ciAmparInsertionRate;NsTract::ciAmparInsertionRate66,1760
+    double ciAmparRemovalRate;NsTract::ciAmparRemovalRate67,1793
+    double baseDepotProb;NsTract::baseDepotProb68,1824
+    double e3DepotProb;NsTract::e3DepotProb69,1850
+    double e3DecayRate;NsTract::e3DecayRate70,1874
+    double maxPotProb;NsTract::maxPotProb71,1898
+    double consLearnRate24h;NsTract::consLearnRate24h75,1996
+    double psdDecayRate24h;NsTract::psdDecayRate24h76,2025
+    double cpAmparRemovalRate01h;NsTract::cpAmparRemovalRate01h77,2053
+    double ciAmparInsertionRate01h;NsTract::ciAmparInsertionRate01h78,2087
+    double ciAmparRemovalRate24h;NsTract::ciAmparRemovalRate24h79,2123
+    double baseDepotProb01h;NsTract::baseDepotProb01h80,2157
+    double maxE3DepotProb01h;NsTract::maxE3DepotProb01h81,2186
+    double e3DepotProb01h;NsTract::e3DepotProb01h82,2267
+    double e3DecayRate24h;NsTract::e3DecayRate24h83,2294
+    double maxPotProb01h;NsTract::maxPotProb01h84,2321
+inline bool operator==(operator==90,2427
+
+ns/NsTract.cc,728
+#define CHECK_RANGE(8,87
+NsTract::NsTract(13,231
+static double calcExpDecayRate(71,2694
+static double calcProb(87,3251
+static double calcConstantRate(96,3499
+void NsTract::calcRates(104,3686
+inline void NsTract::calcDepotProb(127,4779
+void NsTract::stimulate(143,5257
+void NsTract::acquire(151,5457
+void NsTract::consolidate(156,5570
+void NsTract::amparTrafficking(161,5674
+void NsTract::depotentiateSome(174,5951
+void NsTract::maintain(186,6189
+void NsTract::togglePsi(204,6613
+void NsTract::reactivate(215,6879
+uint NsTract::getNumPotentiated(237,7453
+void NsTract::printNumPotentiatedHdr(249,7668
+void NsTract::printNumPotentiated(257,7825
+void NsTract::printState(265,8002
+string NsTract::toStr(276,8211
+
+include/Sched.hh,292
+#define SCHED_HH9,91
+namespace Sched 16,156
+    typedef void (*NoneCallback)Sched::NoneCallback20,226
+    typedef void (*UintCallback)Sched::UintCallback23,336
+    typedef void (*DbleCallback)Sched::DbleCallback27,490
+    typedef void (*VoidPtrCallback)Sched::VoidPtrCallback31,646
+
+include/Util.hh,4478
+#define UTIL_HH11,119
+using std::vector;15,172
+using std::string;19,247
+namespace Util 24,312
+    inline bool isOdd(Util::isOdd28,381
+    inline bool isEven(Util::isEven29,435
+    inline bool isDigitsOnly(Util::isDigitsOnly34,554
+    inline vector<int> randPerm(Util::randPerm68,1409
+    inline vector<int> randUniqueIntList(Util::randUniqueIntList88,1928
+    template<class T> std::string intToBinStr(Util::intToBinStr128,3300
+    template<class T> T     min(Util::min178,4833
+    template<class T> T     max(Util::max179,4917
+    template<class T> T     min(Util::min181,5002
+    template<class T> T     max(Util::max184,5126
+    template<class T> T bracket(Util::bracket192,5369
+    template<class T> void confine(Util::confine200,5574
+    template<class T> bool isInRange(Util::isInRange212,5828
+    template<class T> void swap(Util::swap220,6015
+    inline bool isBlank(Util::isBlank230,6287
+    inline bool isBlank(Util::isBlank231,6362
+    inline int strCiCmp(Util::strCiCmp236,6500
+    inline bool strCiEq(Util::strCiEq244,6685
+    inline bool strEq(Util::strEq252,6855
+    inline const char *plural(Util::plural265,7138
+    inline const char *plural(Util::plural273,7278
+    inline int compareDoubles(Util::compareDoubles281,7470
+    inline string repeatStr(Util::repeatStr293,7818
+    inline std::vector<string> tokenize(Util::tokenize414,11655
+    inline string untokenize(Util::untokenize440,12522
+    inline std::vector<std::string> glob(Util::glob456,12986
+    const int OPTARG_NONE Util::OPTARG_NONE472,13573
+    const int OPTARG_STR Util::OPTARG_STR473,13612
+    const int OPTARG_INT Util::OPTARG_INT474,13653
+    const int OPTARG_UINT Util::OPTARG_UINT475,13691
+    const int OPTARG_DBLE Util::OPTARG_DBLE476,13730
+    const int OPTARG_EXPR Util::OPTARG_EXPR477,13771
+        const char *optName;Util::optName489,14180
+        int         argType;Util::argType490,14250
+        void       *argPtr;Util::argPtr491,14305
+        const char *argName;Util::argName492,14387
+        const char *descr;Util::descr493,14465
+    } ParseOptSpec;Util::ParseOptSpec494,14540
+    inline const char *tableFmt(Util::tableFmt548,16582
+    inline const char *tableFmt(Util::tableFmt549,16662
+    inline const char *tableFmt(Util::tableFmt550,16739
+    inline const char *tableFmt(Util::tableFmt551,16816
+    template<class T> string matrixToStr(Util::matrixToStr556,16974
+    enum Operation Util::Operation573,17425
+        ADD,Util::Operation::ADD574,17446
+        SUB,Util::Operation::SUB575,17459
+        MUL,Util::Operation::MUL576,17472
+        DIV,Util::Operation::DIV577,17485
+        MIN,Util::Operation::MIN578,17498
+        MAX,Util::Operation::MAX579,17511
+        AVG,Util::Operation::AVG580,17524
+        STDEVP,Util::Operation::STDEVP581,17537
+        STDEVS,Util::Operation::STDEVS582,17553
+        STERRUtil::Operation::STERR583,17569
+    template<class T> vector<T> vectorOp(Util::vectorOp589,17674
+    template<class T> vector<T> vectorOp(Util::vectorOp616,18537
+    template<class T, class U> vector<T> vectorAdd(Util::vectorAdd638,19196
+    template<class T, class U> vector<T> vectorSub(Util::vectorSub645,19331
+    template<class T, class U> vector<T> vectorMul(Util::vectorMul652,19466
+    template<class T> vector<T> vectorSquare(Util::vectorSquare659,19601
+    template<class T, class U> vector<T> vectorDiv(Util::vectorDiv665,19713
+    template<class T, class U> vector<T> vectorMin(Util::vectorMin672,19848
+    template<class T, class U> vector<T> vectorMax(Util::vectorMax679,19983
+    template<class T> vector<vector<T>> matrixOp(Util::matrixOp689,20202
+    template<class T> vector<vector<T>> matrixOp(Util::matrixOp715,21154
+    template<class T, class U> vector<vector<T>> matrixAdd(Util::matrixAdd737,21901
+    template<class T, class U> vector<vector<T>> matrixSub(Util::matrixSub744,22052
+    template<class T, class U> vector<vector<T>> matrixMul(Util::matrixMul751,22203
+    template<class T> vector<vector<T>> matrixSquare(Util::matrixSquare758,22354
+    template<class T, class U> vector<vector<T>> matrixDiv(Util::matrixDiv764,22482
+    template<class T, class U> vector<vector<T>> matrixMin(Util::matrixMin771,22633
+    template<class T, class U> vector<vector<T>> matrixMax(Util::matrixMax778,22784
+#define NUM_ELEM(789,23003
+#define IS_PTR_TO(795,23170
+#define IS_OF_CLASS(796,23243
+
+include/Trace.hh,3570
+#define TRACE_HH9,91
+using std::string;13,152
+using std::unordered_set;14,171
+class Trace24,306
+    enum TraceLevel Trace::TraceLevel27,328
+        TRACE_Flow,Trace::TraceLevel::TRACE_Flow28,350
+        TRACE_Debug3,Trace::TraceLevel::TRACE_Debug329,370
+        TRACE_Debug2,Trace::TraceLevel::TRACE_Debug230,392
+        TRACE_Debug1,Trace::TraceLevel::TRACE_Debug131,414
+        TRACE_Debug,Trace::TraceLevel::TRACE_Debug32,436
+        TRACE_Info1,Trace::TraceLevel::TRACE_Info133,457
+        TRACE_Info,Trace::TraceLevel::TRACE_Info34,478
+        TRACE_Warn,Trace::TraceLevel::TRACE_Warn35,498
+        TRACE_Error,Trace::TraceLevel::TRACE_Error36,518
+        TRACE_Fatal,Trace::TraceLevel::TRACE_Fatal37,539
+        TRACE_MaxvalTrace::TraceLevel::TRACE_Maxval39,561
+    static void setTraceLevel(Trace::setTraceLevel42,590
+    static bool setTraceLevel(Trace::setTraceLevel47,679
+    static TraceLevel getTraceLevel(Trace::getTraceLevel59,1072
+    static const char *getTraceLevelString(Trace::getTraceLevelString64,1150
+    static void setTraceTag(Trace::setTraceTag69,1253
+    static bool isSet(Trace::isSet74,1344
+    #define TRACE(80,1469
+#define TTRACE(87,1686
+    #define TRACE_FLOW_IS_ON 94,1942
+    #define TRACE_DEBUG3_IS_ON 95,2022
+    #define TRACE_DEBUG2_IS_ON 96,2102
+    #define TRACE_DEBUG1_IS_ON 97,2182
+    #define TRACE_DEBUG_IS_ON 98,2262
+    #define TRACE_INFO1_IS_ON 99,2342
+    #define TRACE_INFO_IS_ON 100,2422
+    #define TRACE_WARN_IS_ON 101,2502
+    #define TRACE_ERROR_IS_ON 102,2582
+    #define TRACE(104,2668
+    #define TTRACE(105,2696
+    #define TRACE_FLOW_IS_ON 106,2730
+    #define TRACE_DEBUG3_IS_ON 107,2768
+    #define TRACE_DEBUG2_IS_ON 108,2806
+    #define TRACE_DEBUG1_IS_ON 109,2844
+    #define TRACE_DEBUG_IS_ON 110,2882
+    #define TRACE_INFO1_IS_ON 111,2920
+    #define TRACE_INFO_IS_ON 112,2958
+    #define TRACE_WARN_IS_ON 113,2996
+    #define TRACE_ERROR_IS_ON 114,3034
+#define TRACE_FLOW(117,3080
+#define TRACE_DEBUG3(118,3146
+#define TRACE_DEBUG2(119,3212
+#define TRACE_DEBUG1(120,3278
+#define TRACE_DEBUG(121,3344
+#define TRACE_INFO1(122,3410
+#define TRACE_INFO(123,3476
+#define TRACE_WARN(124,3542
+#define TRACE_ERROR(125,3608
+#define TTRACE_FLOW(127,3675
+#define TTRACE_DEBUG3(128,3753
+#define TTRACE_DEBUG2(129,3831
+#define TTRACE_DEBUG1(130,3909
+#define TTRACE_DEBUG(131,3987
+#define TTRACE_INFO1(132,4065
+#define TTRACE_INFO(133,4143
+#define TTRACE_WARN(134,4221
+#define TTRACE_ERROR(135,4299
+#define TRACE_FATAL(137,4378
+#define TTRACE_FLOW_IS_ON(144,4730
+#define TTRACE_DEBUG3_IS_ON(145,4803
+#define TTRACE_DEBUG2_IS_ON(146,4878
+#define TTRACE_DEBUG1_IS_ON(147,4953
+#define TTRACE_DEBUG_IS_ON(148,5028
+#define TTRACE_INFO1_IS_ON(149,5102
+#define TTRACE_INFO_IS_ON(150,5176
+#define TTRACE_WARN_IS_ON(151,5249
+#define TTRACE_ERROR_IS_ON(152,5322
+#define ABORT_IF(162,5670
+#define ABORT_UNLESS(168,5840
+#define TRACE_ENTER(171,5910
+#define TRACE_EXIT(172,5992
+#define TRACE_RETURN(173,6074
+    static void trace(Trace::trace176,6177
+    static void incrIndent(Trace::incrIndent190,6693
+        static void decrIndent(Trace::decrIndent195,6787
+    static const char *traceLevelString(Trace::traceLevelString200,6881
+    static TraceLevel traceLevel;Trace::traceLevel218,7523
+    static unordered_set<string> traceTags;Trace::traceTags219,7557
+    static uint indentLevel;Trace::indentLevel220,7601
+    enum { MAXINDENT Trace::MAXINDENT222,7635
+    static const char *indentStr(Trace::indentStr224,7670
+
+include/Props.hh,658
+#define PROPS_HH11,120
+using std::string;15,174
+class Props 17,194
+    Props(Props::Props22,259
+    Props(Props::Props28,341
+    string fname;Props::fname90,2935
+    string topLevelFname;Props::topLevelFname91,2953
+    struct Prop Props::Prop93,2984
+        string name;Props::Prop::name94,3002
+        string value;Props::Prop::value95,3023
+        string propsFile;Props::Prop::propsFile96,3045
+        int lineNum;Props::Prop::lineNum97,3071
+        bool immutable;Props::Prop::immutable98,3092
+        bool used;Props::Prop::used99,3116
+        Prop(Props::Prop::Prop101,3136
+    std::vector<Prop> props;Props::props106,3218
+
+include/MathUtil.hh,191
+#define MATH_UTIL_HH11,129
+using std::vector;15,187
+namespace MathUtil 19,228
+    inline double asigmoid(MathUtil::asigmoid29,589
+    inline double asymptote(MathUtil::asymptote42,998
+
+lib/Util.cc,2037
+namespace Util 29,454
+    static int randSeed Util::randSeed32,493
+    static int getSeed(Util::getSeed39,686
+    void initRand(Util::initRand58,1227
+    int randInt(Util::randInt68,1402
+        typedef boost::mt19937 RNGType;Util::RNGType69,1438
+        typedef boost::variate_generator< RNGType, boost::uniform_int<> > VGENType;Util::VGENType70,1478
+    void initRand(Util::initRand107,2803
+    int randInt(Util::randInt119,3062
+    vector<int> randPerm(Util::randPerm128,3261
+    vector<int> randIntList(Util::randIntList146,3690
+    vector<int> randUniqueIntList(Util::randUniqueIntList159,3987
+    vector<uint> randUniqueUintList(Util::randUniqueUintList196,5080
+    double randDouble(Util::randDouble209,5407
+    vector<double> randDoubleList(Util::randDoubleList225,5941
+    vector<double> randDoubleList(Util::randDoubleList238,6290
+    vector<double> randUniqueDoubleList(Util::randUniqueDoubleList252,6630
+    string randStr(Util::randStr272,7259
+    void usage(Util::usage287,7637
+    void usageExit(Util::usageExit304,8126
+    string wstrip(Util::wstrip321,8610
+    string hms(Util::hms333,8961
+    string hmsm(Util::hmsm349,9388
+    char *chop(Util::chop372,10018
+    char *tok(Util::tok381,10200
+    int strToInt(Util::strToInt410,10952
+    uint strToUint(Util::strToUint423,11279
+    double strToDouble(Util::strToDouble437,11702
+    double exprToDouble(Util::exprToDouble450,12040
+    bool strToBool(Util::strToBool460,12275
+    std::vector<string> tokenize(Util::tokenize483,12915
+        #define ISSEP(491,13138
+        #define ISQUOTE(492,13214
+        #define ISTOKEN(493,13290
+        #define QUOTING 494,13366
+    static void checkParseOptSpecs(Util::checkParseOptSpecs556,15232
+    int parseOpts(Util::parseOpts564,15604
+    string parseOptsUsage(Util::parseOptsUsage632,18042
+    static std::vector<std::vector<uint> > binomTable;Util::binomTable680,19489
+    void initBinom(Util::initBinom682,19545
+    uint binom(Util::binom714,20710
+
+lib/Props.cc,2106
+static void stripComment(27,582
+string Props::substProps(50,1258
+void Props::fatal(64,1584
+void Props::fatal(69,1746
+Props::Props(77,1878
+void Props::readProps(82,1937
+Props::Prop *Props::findProp(Props::findProp157,4285
+string Props::getString(172,4667
+string  Props::getString(183,4874
+int Props::propToInt(188,4964
+int Props::getInt(198,5148
+int Props::getInt(208,5340
+uint Props::propToUint(213,5427
+uint Props::getUint(223,5615
+uint Props::getUint(233,5811
+double Props::propToDouble(238,5901
+double Props::getDouble(248,6097
+double Props::getDouble(258,6301
+bool Props::propToBool(263,6397
+bool Props::getBool(273,6585
+bool Props::getBool(283,6781
+void Props::removeBraces(292,6970
+std::vector<string> Props::propToStringVector(305,7371
+std::vector<string> Props::getStringVector(329,7958
+std::vector<string> Props::getStringVector(339,8206
+std::vector<int> Props::propToIntVector(344,8327
+std::vector<int> Props::getIntVector(370,8979
+std::vector<int> Props::getIntVector(380,9215
+std::vector<uint> Props::propToUintVector(385,9327
+std::vector<uint> Props::getUintVector(410,9983
+std::vector<uint> Props::getUintVector(420,10223
+std::vector<double> Props::propToDoubleVector(425,10338
+std::vector<double> Props::getDoubleVector(450,11002
+std::vector<double> Props::getDoubleVector(460,11250
+std::vector<std::vector<double> > Props::propToDoubleMatrix(465,11371
+    enum TokenType 495,12261
+    enum TokenType { LBRACE,TokenType::LBRACE495,12261
+    enum TokenType { LBRACE, ELEM TokenType::ELEM495,12261
+std::vector<std::vector<double> > Props::getDoubleMatrix(535,13443
+std::vector<std::vector<double> > Props::getDoubleMatrix(545,13719
+void Props::setString(559,14211
+void Props::setInt(577,14637
+void Props::setUint(584,14767
+void Props::setDouble(591,14899
+void Props::setBool(598,15035
+void Props::setStringVector(605,15186
+void Props::setIntVector(618,15497
+void Props::setUintVector(631,15794
+void Props::setDoubleVector(644,16093
+void Props::setDoubleMatrix(657,16396
+void Props::reportUnused(674,16832
+string Props::toString(687,17226
+
+lib/Trace.cc,122
+Trace::TraceLevel Trace::traceLevel 10,95
+unordered_set<string> Trace::traceTags;11,152
+uint Trace::indentLevel 12,192
+
+lib/Sched.cc,1763
+namespace Sched 13,153
+    enum EventDataType Sched::EventDataType14,171
+        NONE,Sched::EventDataType::NONE15,196
+        UINT,Sched::EventDataType::UINT16,210
+        DBLE,Sched::EventDataType::DBLE17,224
+        VOID_PTRSched::EventDataType::VOID_PTR18,238
+    struct EventData Sched::EventData21,263
+            uint   u;Sched::EventData::u23,302
+            double d;Sched::EventData::d24,324
+            void   *v;Sched::EventData::v25,346
+        EventData(Sched::EventData::EventData28,381
+        EventData(Sched::EventData::EventData29,404
+        EventData(Sched::EventData::EventData30,442
+        EventData(Sched::EventData::EventData31,480
+    union Callback Sched::Callback34,526
+        NoneCallback n;Sched::Callback::n35,547
+        UintCallback u;Sched::Callback::u36,571
+        DbleCallback d;Sched::Callback::d37,595
+        VoidPtrCallback v;Sched::Callback::v38,619
+    struct Event Sched::Event44,695
+        double        time;Sched::Event::time45,714
+        EventDataType type;Sched::Event::type46,742
+        Callback      cb;Sched::Event::cb47,770
+        EventData     data;Sched::Event::data48,796
+        Event         *next;Sched::Event::next49,824
+        Event(Sched::Event::Event51,854
+    static Event *nextEvent Sched::nextEvent67,1174
+    void scheduleEvent(Sched::scheduleEvent75,1375
+    void scheduleEvent(Sched::scheduleEvent93,1803
+    void scheduleEvent(Sched::scheduleEvent102,1981
+    void scheduleEvent(Sched::scheduleEvent114,2209
+    void scheduleEvent(Sched::scheduleEvent126,2439
+    void clearEvents(Sched::clearEvents141,2737
+    static void processEvent(Sched::processEvent152,2947
+    void processEvents(Sched::processEvents175,3606
+
+lib/format.cc,0

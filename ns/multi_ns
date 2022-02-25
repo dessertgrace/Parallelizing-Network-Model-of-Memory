@@ -1,0 +1,293 @@
+#!/usr/bin/env python
+#
+#
+# Run the ns test cases multiple times, collect the outputs in per-testcase
+# directories, and calculate means and stdev. Plot the means of scores. If -v
+# is specified, then also plot stdev as variation bands.
+
+from __future__ import print_function
+import sys, os, time, subprocess, getopt, re, glob
+
+def propVal(prop, propsFile):
+    pattern = re.compile(prop + ":(.*)", re.IGNORECASE)
+    for i, line in enumerate(open(propsFile)):
+        for match in re.finditer(pattern, line):
+            return match.group(1).strip()
+
+allScores = "intact_score,hpc_score,acc_score"
+        
+progname=''
+def usage():
+    print('Usage: ' + progname + ' [-h] [-t trace_level] [-b] [-s] [-r] [-f] ' + 
+          '[-d outdir] [-p propsPat] [-v] [-y penalty] [-X xrange] ' +
+          '[-Y yrange] [numruns]')
+    print('  -h: Print this message')
+    print('  -t: trace level passed to ns')
+    print('  -b: big plot')
+    print('  -s: small plot with no legend')
+    print('  -r: recalculate avg, stdev and sterr (only with numruns == 0)')
+    print('  -f: plot to file(s) outdir/testcase.svg (default plotdir = outdir)')
+    print('  -d: output base directory. Default is out/yyyy_mm_dd__hh_mm_ss')
+    print('        Subdirectories will be created for each test case')
+    print('  -p: propsPat[s] to run (default: all of them)')
+    print('  -v: plot variation (stdev) bands')
+    print('  -y: penalty for extra active units')
+    print('  -X: x range for plotting, e.g. [0:60]')
+    print('  -Y: y range for plotting, e.g. [0:1.2]')
+    print('  <numRuns>: number of runs of each test case. Default is 0')
+    print('        If <numRuns> == 0, then plot existing data in <dir>')
+
+    sys.exit(2)
+
+def main():
+    progname = os.path.basename(sys.argv[0])
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "ht:bsrfd:p:X:Y:vy:",
+                                   ["help", "tl=", "big", "small", "recalc",
+                                    "file", "dir=", "propsPat=",
+                                    "vbands", "penalty"])
+    except getopt.GetoptError as err:
+        print(err)
+        usage()
+        sys.exit(2)
+
+    small = False
+    big = False
+    recalc = False
+    plotToFile=False
+    propsPatterns = []
+    outBaseDir = ''
+    vflag = ' '
+    Xflag = ' '
+    Yflag = ' -Y [0:1.2] '
+    numRuns = 0
+    extraPenalty="0.5"
+    nsArgs=[]
+    
+    for opt, val in opts:
+        if opt in ("-h", "--help"):
+            usage()
+            sys.exit()
+        elif opt in ("-t", "--tl"):
+            nsArgs.append("-tl")
+            nsArgs.append(val)
+            
+        elif opt in ("-b", "--big"):
+            big = True
+        elif opt in ("-s", "--small"):
+            small = True
+        elif opt in ("-r", "--recalc"):
+            recalc = True
+        elif opt in ("-f", "--file"):
+            plotToFile = True
+        elif opt in ("-d", "--dir"):
+            outBaseDir = val
+        elif opt in ("-p", "--propsPat"):
+            propsPatterns = propsPatterns + [val]
+        elif opt in ("-v", "--vbands"):
+            vflag = " -v"
+        elif opt in ("-X", "--xrange"):
+            Xflag = " -X " + val
+        elif opt in ("-Y", "--yrange"):
+            Yflag = " -Y " + val
+        elif opt in ("-y", "--penalty"):
+            extraPenalty = val
+        else:
+            assert False, "unhandled option"
+
+    if (big and small):
+        print('Big and small?')
+        sys.exit(2)
+
+    if (big):
+        plotFlags="-w 1560 -h 975 -c ns.col -k off" + vflag + Xflag + Yflag
+    elif (small):
+        plotFlags="-w 280 -h 180 -c ns.col -k off" + vflag  + Xflag + Yflag
+    else:
+        plotFlags="-w 450 -h 300 -c ns.col" + vflag  + Xflag + Yflag
+
+    # Extracts args containing '=' into a separate list to be passed to ns
+    #
+    for a in args:
+        if "=" in a:
+            nsArgs.append(a)
+    for a in nsArgs:
+        if a in args:
+            args.remove(a)
+    nsArgs = ' '.join(nsArgs)
+
+    # If there's exactly one arg left, then it must be numRuns
+    #
+    if len(args) > 1:
+        print('Too many arguments')
+        usage()
+        sys.exit(2)
+    elif (len(args) == 1):
+        try:
+            numRuns = int(args[0])
+        except:
+            print('Bad value for numRuns: ' + args[0]);
+            sys.exit(2)
+
+    propsPathNames = []
+    for pp in propsPatterns:
+        propsPathNames += glob.glob('props/*' + pp + '*.props')
+
+    if (len(propsPathNames) == 0):
+        propsPathNames = glob.glob('props/*.props')
+        propsPathNames.sort()
+
+    if (numRuns == 0):
+        if (outBaseDir == ''):
+            outBaseDir = 'lastout'
+        if (not os.path.isdir(outBaseDir)):
+            print("'" + outBaseDir +
+                  "' is not a directory (must exist when numRuns == 0)")
+            sys.exit(2)
+    else:
+        if (outBaseDir == ''):
+            outBaseDir = 'out' + '/' + time.strftime('%Y_%m_%d__%H_%M_%S')
+
+        if (os.path.isdir(outBaseDir)):
+            print("'" + outBaseDir +
+                  "' already exists (not ok when numRuns != 0)")
+            sys.exit(2)
+
+        os.system ("ln -sfT " + outBaseDir + " lastout")
+        
+    for propsPath in propsPathNames:
+        # print("---- " + propsPath)
+        # extract the props file base name
+        m = re.match('props/(.*)\.props$', propsPath)
+        if m:
+            pname = m.group(1)
+        else:
+            print("What the heck?")
+            sys.exit(2)
+
+        # extract test case ID from base name
+        m = re.match('ns_([^_]*)', pname)
+        if m:
+            tcId = '[' + m.group(1) + ']'
+        else:
+            tcId = ''
+
+        outDir = outBaseDir + '/' + pname
+        avgFile = outDir + '/' + 'avg.out'
+        stdevsFile = outDir + '/' + 'stdevs.out'
+        sterrFile = outDir + '/' + 'sterr.out'
+        statsFile = outDir + '/' + 'stats.out'
+        plotFile = outBaseDir + '/' + pname + ".svg"
+        # print("propsPath = " + propsPath)
+        title = tcId + ' ' + propVal("title", propsPath)
+        
+        if (numRuns != 0):
+            os.makedirs(outDir)
+            procs = []
+            
+            # Run numRuns copies of ns with propsPath in parallel
+            #
+            for i in range(numRuns):
+                print(i)
+                rawFile = outDir + '/' + str(i) + '.raw'
+                cmd = ("ns " + nsArgs + " " + propsPath + " > " + rawFile)
+                p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
+                                     stderr=subprocess.STDOUT)
+                procs.append(p)
+
+            exitCodes = [p.wait() for p in procs]
+            print('Exit codes(' + propsPath + '): ', end='')
+            print(exitCodes)
+
+            outputs = [p.communicate()[0] for p in procs]
+            print('Outputs(' + propsPath + '): ', end='')
+            print(outputs)
+
+            # Post-process: extract data from the [i].raw ns output file,
+            # into files named [i].intact, [i].hpc, [i].acc, then combine
+            # these into [i].out
+            #
+            for i in range(numRuns):
+                rawFile = outDir + '/' + str(i) + '.raw'
+                intactFile = outDir + '/' + str(i) + '.intact'
+                hpcFile = outDir + '/' + str(i) + '.hpc'
+                accFile = outDir + '/' + str(i) + '.acc'
+                outFile = outDir + '/' + str(i) + '.out'
+
+                os.system("echo time intact_hits intact_extras intact_score" +
+                          "> " + intactFile)
+                os.system("awk 'BEGIN {p = " + extraPenalty + "} "
+                          "/intact-settled.*SC1/ "
+                          "{score=($6-p*$7)/$5; "
+                          "if (score<0) score = 0; "
+                          "print $1,$6,$7,score}' " +
+                          rawFile + " >> " + intactFile)
+
+                os.system("echo hpc_hits hpc_extras hpc_score > " + hpcFile)
+                os.system("awk 'BEGIN {p = " + extraPenalty + "} "
+                          "/hpc-frozen-settled.*SC1/ "
+                          "{score=($6-p*$7)/$5; "
+                          "if (score<0) score = 0; "
+                          "print $6,$7,score}' " +
+                          rawFile + " >> " + hpcFile)
+
+                os.system("echo acc_hits acc_extras acc_score > " + accFile)
+                os.system("awk 'BEGIN {p = " + extraPenalty + "} "
+                          "/acc-frozen-settled.*SC1/ "
+                          "{score=($6-p*$7)/$5; "
+                          "if (score<0) score = 0; "
+                          "print $6,$7,score}' " +
+                          rawFile + " >> " + accFile)
+
+                os.system("paste " + intactFile + " " + hpcFile + " " +
+                          accFile + " > " + outFile)
+
+        if ((numRuns != 0) or recalc):
+            procs = []
+
+            cmd = 'mat -hdr -ind avg ' + outDir + '/[0-9]*.out > ' + avgFile
+            p = subprocess.Popen(cmd, shell=True)
+            procs.append(p)
+
+            cmd = ('mat -hdr -ind -pref S_ stdevs ' + outDir +
+                   '/[0-9]*.out > ' + stdevsFile)
+            p = subprocess.Popen(cmd, shell=True)
+            procs.append(p)
+
+            cmd = ('mat -hdr -ind -pref E_ sterr ' + outDir +
+                   '/[0-9]*.out > ' + sterrFile)
+            p = subprocess.Popen(cmd, shell=True)
+            procs.append(p)
+
+            exitCodes = [p.wait() for p in procs]
+
+            cmd = ("paste " + avgFile + " " + stdevsFile + " " +
+                   sterrFile + " | " +
+                   " columns time   intact_hits   intact_extras intact_score"
+                   "                   hpc_hits      hpc_extras    hpc_score"
+                   "                   acc_hits      acc_extras    acc_score "
+                   "              S_intact_hits S_intact_extras S_intact_score"
+                   "                 S_hpc_hits    S_hpc_extras    S_hpc_score"
+                   "                 S_acc_hits    S_acc_extras    S_acc_score "
+                   "              E_intact_hits E_intact_extras E_intact_score"
+                   "                  E_hpc_hits   E_hpc_extras    E_hpc_score"
+                   "                  E_acc_hits   E_acc_extras    E_acc_score "
+                   " > " + statsFile)
+            p = subprocess.Popen(cmd, shell=True)
+            p.wait()
+
+        if (plotToFile):
+            outputOption = " -o " + plotFile
+        else:
+            outputOption = ""
+            print(title)
+        cmd = ("nsplot " + plotFlags + outputOption +
+               " -s " + allScores +
+               " -t " + '"' + title +
+               '" < ' + statsFile)
+        p = subprocess.Popen(cmd, shell=True)
+        p.wait()
+        print(cmd)
+
+if __name__ == "__main__":
+    main()

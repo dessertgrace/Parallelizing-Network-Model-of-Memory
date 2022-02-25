@@ -1,0 +1,15 @@
+title:                  Acquisition
+
+include:                ns_common.inc
+
+timeStepChanges::       { 0::00 1 1::00 24 } # when, step(hours), ...
+#reactivateTimes:       { 30 }
+#hpcPsiTimes:           { 0 }
+#accPsiTimes:           { 20 21 }
+#sc0PsiTimes:           { 20 21 }
+#sc1PsiTimes:           { 20 21 }
+#hpcLesionTime:         55
+#accLesionTime:         30
+#hpcFreezeTimes:        { 55 }
+#accFreezeTimes:        { 0 1 }
+#hpcFreezeTimes:        { 20 }

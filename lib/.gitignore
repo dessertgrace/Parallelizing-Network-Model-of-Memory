@@ -1,0 +1,6 @@
+*.o
+*.d
+TAGS
+testfmt
+testrand
+testasig

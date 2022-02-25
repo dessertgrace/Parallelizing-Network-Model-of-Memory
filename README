@@ -1,0 +1,150 @@
+==================================================
+NS (Neural Simulator) - a neural-network framework
+==================================================
+
+Helfer, P. & Shultz, T.R. (2019)
+A Computational Model of Systems Memory Consolidation and Reconsolidation
+Submitted for publication
+
+Preprint: https://arxiv.org/ftp/arxiv/papers/1703/1703.01357.pdf
+
+This implementation by Peter Helfer to whom questions should be addressed.
+peter.helfer@mail.mcgill.ca
+
+
+----------------------------------------
+This directory tree contains three subdirectories:
+
+ns :     software for running the Neural Simulator
+lib:     a C++ library of utility functions used by ns
+include: C++ include file used by lib and ns
+
+The 'ns' directory contains:
+
+- Source code for 'ns', a C++ program that implements a neural network
+  designed to model memory consolidation and reconsolidation; ns --help shows
+  available options 
+
+- props, a subdirectory containing property files that define different
+  test cases for ns
+
+- multi_ns, a python script that repeatedly invokes ns to run all the test cases
+  defined in the props directory, or - if specified - one or more selected test
+  cases, then plots the results;
+
+- mat.cc, a C++ program that applies any of several matrix operations to sets
+  of matrices given as text input files. Used by multi_ns; mat --help shows
+  available options
+
+- ns.col, specification of colors to use when plotting results
+
+- plot, a wrapper for gnuplot; plot --help shows available options
+
+- nsplot, a wrapper for plot; nsplot --help shows available options
+
+----------------------------------------
+
+To build and run the software, you will need a GNU/Linux system with the GNU
+Make system, a C++ compiler, the Python interpreter and GNUPlot available.
+
+On a Debian Linux system, the required utilities can be installed like this:
+
+$ sudo apt-get install build-essential
+$ sudo apt-get install gnuplot
+
+----------------------------------------
+Building ns
+
+cd into the lib directory and type 'make'.
+cd into the ns directory and type 'make'.
+
+----------------------------------------
+Running ns, an example invocation:
+
+$ ./multi_ns -p ns_01 -v 10
+
+   This will execute 10 simulations as specified in the properties file(s)
+   matching props/ns_01*.props and display the results (mean recall scores
+   with standard-deviation ribbons) in a GnuPlot window. The three plots
+   indicate recall performance with intact network (intact_score), with the
+   HPC region inactivated during each recall test (hpc_score), and with the
+   ACC region inactivated during each recall test (acc_score).
+
+The command "./multi_ns --help" will show other available options.
+
+---------------------------------------
+Output files
+
+Unless you specify a directory using the -d option, multi_ns will create an
+output directory using the current date and time as name,
+e.g. out/2019_09_28__19_51_26. A subdirectory of the output directory is
+then created for each test case, e.g. 'ns_01_react' for the example
+above. Each execution of ns produces a raw output file with a name like
+0.raw, 1.raw, etc. From these, multi_ns extracts columns of output data into
+*.out files and further into *.hpc and *.acc files. These are then processed
+to calulate means (avg.out), standard deviations (stdevs.out), and standard
+errors (sterr.out). Finally, the results are combined in stats.out, which is
+used as input to the 'nsplot' script.
+
+To plot the results of a previous invocation of multi_ns, use the -d option
+to specify an existing output directory, for example:
+
+$ ./multi_ns -d out/2019_09_12__20_50_06/ -p ns_01
+
+---------------------------------------
+Properties file format
+
+A .props configuration file specifies parameters for a simulation.
+
+Comments: Any text following a # character is a comment.
+
+include: file_name    # read lines from the named file.
+
+name: value           # specify a value for a property 
+
+Most poperties are self-explanatory and/or described in the paper.
+
+Properties that specify times for events like reactivation, PSI infusion or HPC lesion
+accept values of the form dd[::hh], so that 2::6 means 2 days and 6 hours, and 13 means
+13 days.
+
+Some of the event properties accept multiple values. These are specified as
+a list of values within curly braces. For example,
+
+accFreezeTimes:         { 30::00   31::00 }
+
+means "Freeze (inactivate) the ACC region at 30 days zero hours, and reactivate it
+at 31 days zero hours".
+
+The timeStepChanges property allows the simulation time step to be modified
+during the simulation, e.g. to use a smaller step size during the first few
+days after reactivation, when things change more rapidly (see ns_01_react.props
+for an example). Each time step change is specified as a time and a step size.
+For example,
+
+timeStepChanges::       { 0::00 1 1::00 24 30::00 1 31::00 24 }
+
+means "At zero days zero hours, set the time step to 1 hour, then at 1 day zero hours, 
+set the time step to 24 hours, etc."
+
+Property values specified in the .props file may be overridden by name=value
+pairs given as command line arguments given to multi_ns. For example, in 
+
+$ ./multi_ns -p ns_01 10  maxInhibition=15
+
+the value 15 overrides whatever value is specified for maxInhibition in the .props
+file.
+
+---------------------------------------
+Miscellaneous
+
+'columns' is a utility that selects columns from a text file and prints them
+          in a specified order. For example, the command
+          './columns -f myfile.text t P A_I PP' will extract the columns with
+          headers t, P, A_I and PP from myfile.txt.
+
+'mat'     is a utility that applies operations to matrices given as input files.
+	  All input files must contain the same number of rows and columns. Type
+	  './mat --help' to see supported operations and options. 
+
+---------------------------------------

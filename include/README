@@ -1,0 +1,24 @@
+The files in this directory
+
+MathUtil.hh
+    A few math utilities
+
+Props.hh
+    A class for managing properties (name-value pairs) read from a file
+
+Sched.hh
+    A simple event scheduler
+
+tinyexpr.h
+    A parser and evaluator for simple math expressions
+
+Trace.hh
+    A utility for tracing program flow and state
+
+Util.hh
+    Miscellaneous utility functions for math, random numbers, string
+    manipulation, type conversion, command line parsing etc.
+
+fmt
+    An open-source library for formatted printing (printf/iostreams replacement)
+    

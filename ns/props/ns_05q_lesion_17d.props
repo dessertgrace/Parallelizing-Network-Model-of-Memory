@@ -1,0 +1,6 @@
+title:                  HPC lesion at 17d
+
+include:                ns_common.inc
+
+hpcLesionTime:          17::00
+

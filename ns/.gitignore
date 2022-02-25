@@ -1,0 +1,7 @@
+*.o
+*.d
+ns2
+vtest
+TAGS
+lastout
+ns

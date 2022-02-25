@@ -1,0 +1,12 @@
+title:                  ACC freeze at 3 days
+
+# Attempt to reproduce Sierra et al 2017: inactivating ACC during
+# conditioning severely impairs recall as tested at 3d and at 40d,
+# but reactivation at 3d rescues 40d recall.
+
+include:                ns_common.inc
+
+timeStepChanges::       { 0::00 1 4::00 24 } # when, step(hours), ...
+accFreezeTimes:         { 0::00   0::1 }
+reactivateTimes:        { 3 }
+
