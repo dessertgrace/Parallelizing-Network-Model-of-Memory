@@ -35,3 +35,5 @@ Simulations are run from within the `ns` directory using the `multi_ns` `Python`
 ```
 
 `-p ns_01` runs simulations as specified in the properties file(s) matching props/ns_01*.props. `-t FATAL` instructs that only fatal errors be logged (**Note**: you need to specifiy a `-t` level, with a choice of  "FLOW", "DEBUG3", "DEBUG2", "DEBUG1", "DEBUG", "INFO1", "INFO", "WARN", "ERROR", "FATAL". I'm not clear on what they all do.). `-f` specifies that the graphs generated are saved to a file (in `.svg` format) instead of displayed on the screen. Finally `10` specifies that 10 runs are executed and the results are averaged. Unless you specify a directory using the `-d` option, `multi_ns` will create an output directory using the current date and time as name in `./out/` into which all raw and post-processed data as well as graphs will be saved.
+
+This generates plots showing the network performance on recall tasks with the whole network intact (intact_score), with the HPC region inactivated during each recall test (hpc_score), and with the ACC region inactivated during each recall test (acc_score).
