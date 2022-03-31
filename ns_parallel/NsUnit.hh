@@ -11,7 +11,7 @@ class NsConnection;
 
 class NsUnit {
 public:
-    NsUnit(const NsLayer *layer, uint index);
+    NsUnit(const NsLayer *layer, uint index, uint gid);
     bool activationFunction(double netInput);
     void computeNewActivation();
     void applyNewActivation();
@@ -23,6 +23,7 @@ public:
 
     const NsLayer *layer;
     const string id;
+    const uint gid;
     double actFuncK;
     double actThreshold;
     bool isFrozen;

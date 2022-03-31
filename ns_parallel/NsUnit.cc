@@ -2,9 +2,10 @@
 #include "NsUnit.hh"
 #include "MathUtil.hh"
 
-NsUnit::NsUnit(const NsLayer *layer, uint index)
+NsUnit::NsUnit(const NsLayer *layer, uint index, uint gid)
     : layer(layer), 
       id(layer->id + "." + fmt::format("{:02}", index)),
+      gid(gid),
       actFuncK(props.getDouble("actFuncK")),
       actThreshold(props.getDouble("actThreshold")),
       isFrozen(false),

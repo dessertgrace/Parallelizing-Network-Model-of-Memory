@@ -1,6 +1,9 @@
 #include <vector>
 using std::vector;
 
+#include <iostream>
+#include <fstream>
+
 #include <getopt.h>
 #include <mpi.h>
 
@@ -43,11 +46,13 @@ static void buildSystem()
     nsSystem->addLayer(sc1LayerId, ncLayerTypeId);
 
     // Create the tracts (connections)
+    #if 0
     nsSystem->addBiTract(hpcLayerId, accLayerId, hpcTractTypeId);
     nsSystem->addBiTract(hpcLayerId, sc0LayerId, hpcTractTypeId);
     nsSystem->addBiTract(hpcLayerId, sc1LayerId, hpcTractTypeId);
     nsSystem->addBiTract(accLayerId, sc0LayerId, ncTractTypeId);
     nsSystem->addBiTract(accLayerId, sc1LayerId, ncTractTypeId);
+    #endif
 }
 
 /**
@@ -445,6 +450,12 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
+    // get every rank to write to its own output file
+    char fname_stdout[100];
+    sprintf(fname_stdout, "%s_%d.raw", argv[argc-1], rank);
+    std::ofstream out(fname_stdout);
+    std::cout.rdbuf(out.rdbuf());
+
     // Initialize the random number generator
     //
     Util::initRand();
@@ -467,7 +478,7 @@ int main(int argc, char *argv[])
     const char *propsFilePath = NULL;
     std::vector<NameValue> cmdLineProps;
 
-    while (optind < argc) {
+    while (optind < argc - 1) {
         TRACE_DEBUG("argv[{}]='{}'\n", optind, argv[optind]);
         if (strchr(argv[optind], '=') != NULL) {
             const char *errMsg;
@@ -565,7 +576,9 @@ int main(int argc, char *argv[])
     // Initialize the system and schedule events
     //
     buildSystem();
-    printSystem();
+    //printSystem();
+    std::cout << "n_units_global: " << n_units_global << std::endl;
+    std::cout << nsSystem->toStr(0, "   ") << std::endl;
     scheduleEvents();
 
     /*

@@ -22,4 +22,6 @@ extern uint  timeStep; // hours
 extern int rank; // MPI rank
 extern int size; // MPI comm size
 
+extern uint n_units_global; // total global number of units (neurons)
+
 #endif

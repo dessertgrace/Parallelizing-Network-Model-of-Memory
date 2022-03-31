@@ -1,5 +1,6 @@
 #include "NsSystem.hh"
 #include "NsLayer.hh"
+#include "NsGlobals.hh"
 
 /**
  * Implementation of the NsLayer class
@@ -25,7 +26,11 @@ NsLayer::NsLayer(const string &id, const string &type)
 {
     uint numUnits = width * height;
     for (uint i = 0; i < numUnits; i++) {
-        units.push_back(new NsUnit(this, i));
+        // round robin assignment of units to ranks
+        if (n_units_global % size == rank) {
+            units.push_back(new NsUnit(this, i, n_units_global));
+        }
+        n_units_global++;
     }
 }
 

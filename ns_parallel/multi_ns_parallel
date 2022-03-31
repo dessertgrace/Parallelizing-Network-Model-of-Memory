@@ -192,8 +192,8 @@ def main():
             #
             for i in range(numRuns):
                 print("run: ", i)
-                rawFile = outDir + '/' + str(i) + '.raw'
-                cmd = ("mpirun -n " + str(nranks) + " ./ns " + nsArgs + " " + propsPath + " > " + rawFile)
+                rawFile = outDir + '/' + str(i)
+                cmd = ("mpirun -n " + str(nranks) + " ./ns " + nsArgs + " " + propsPath + " " + rawFile)
                 print(cmd)
                 os.system(cmd)
 
