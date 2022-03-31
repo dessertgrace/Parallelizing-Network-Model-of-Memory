@@ -6,3 +6,5 @@
 Props props;
 uint  simTime;
 uint  timeStep;
+int rank;
+int size;

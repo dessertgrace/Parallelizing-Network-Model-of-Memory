@@ -42,8 +42,8 @@ def usage():
 def main():
     progname = os.path.basename(sys.argv[0])
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "ht:bsrfd:p:X:Y:vy:",
-                                   ["help", "tl=", "big", "small", "recalc",
+        opts, args = getopt.getopt(sys.argv[1:], "n:ht:bsrfd:p:X:Y:vy:",
+                                   ["nranks", "help", "tl=", "big", "small", "recalc",
                                     "file", "dir=", "propsPat=",
                                     "vbands", "penalty"])
     except getopt.GetoptError as err:
@@ -51,6 +51,7 @@ def main():
         usage()
         sys.exit(2)
 
+    nranks = 1
     small = False
     big = False
     recalc = False
@@ -68,6 +69,8 @@ def main():
         if opt in ("-h", "--help"):
             usage()
             sys.exit()
+        elif opt in ("-n", "--nranks"):
+            nranks = int(val)
         elif opt in ("-t", "--tl"):
             nsArgs.append("-tl")
             nsArgs.append(val)
@@ -188,106 +191,11 @@ def main():
             # Run numRuns copies of ns with propsPath in parallel
             #
             for i in range(numRuns):
-                print(i)
+                print("run: ", i)
                 rawFile = outDir + '/' + str(i) + '.raw'
-                cmd = ("ns " + nsArgs + " " + propsPath + " > " + rawFile)
-                p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-                                     stderr=subprocess.STDOUT)
-                procs.append(p)
-
-            exitCodes = [p.wait() for p in procs]
-            print('Exit codes(' + propsPath + '): ', end='')
-            print(exitCodes)
-
-            outputs = [p.communicate()[0] for p in procs]
-            print('Outputs(' + propsPath + '): ', end='')
-            print(outputs)
-
-            # Post-process: extract data from the [i].raw ns output file,
-            # into files named [i].intact, [i].hpc, [i].acc, then combine
-            # these into [i].out
-            #
-            for i in range(numRuns):
-                rawFile = outDir + '/' + str(i) + '.raw'
-                intactFile = outDir + '/' + str(i) + '.intact'
-                hpcFile = outDir + '/' + str(i) + '.hpc'
-                accFile = outDir + '/' + str(i) + '.acc'
-                outFile = outDir + '/' + str(i) + '.out'
-
-                os.system("echo time intact_hits intact_extras intact_score" +
-                          "> " + intactFile)
-                os.system("awk 'BEGIN {p = " + extraPenalty + "} "
-                          "/intact-settled.*SC1/ "
-                          "{score=($6-p*$7)/$5; "
-                          "if (score<0) score = 0; "
-                          "print $1,$6,$7,score}' " +
-                          rawFile + " >> " + intactFile)
-
-                os.system("echo hpc_hits hpc_extras hpc_score > " + hpcFile)
-                os.system("awk 'BEGIN {p = " + extraPenalty + "} "
-                          "/hpc-frozen-settled.*SC1/ "
-                          "{score=($6-p*$7)/$5; "
-                          "if (score<0) score = 0; "
-                          "print $6,$7,score}' " +
-                          rawFile + " >> " + hpcFile)
-
-                os.system("echo acc_hits acc_extras acc_score > " + accFile)
-                os.system("awk 'BEGIN {p = " + extraPenalty + "} "
-                          "/acc-frozen-settled.*SC1/ "
-                          "{score=($6-p*$7)/$5; "
-                          "if (score<0) score = 0; "
-                          "print $6,$7,score}' " +
-                          rawFile + " >> " + accFile)
-
-                os.system("paste " + intactFile + " " + hpcFile + " " +
-                          accFile + " > " + outFile)
-
-        if ((numRuns != 0) or recalc):
-            procs = []
-
-            cmd = 'mat -hdr -ind avg ' + outDir + '/[0-9]*.out > ' + avgFile
-            p = subprocess.Popen(cmd, shell=True)
-            procs.append(p)
-
-            cmd = ('mat -hdr -ind -pref S_ stdevs ' + outDir +
-                   '/[0-9]*.out > ' + stdevsFile)
-            p = subprocess.Popen(cmd, shell=True)
-            procs.append(p)
-
-            cmd = ('mat -hdr -ind -pref E_ sterr ' + outDir +
-                   '/[0-9]*.out > ' + sterrFile)
-            p = subprocess.Popen(cmd, shell=True)
-            procs.append(p)
-
-            exitCodes = [p.wait() for p in procs]
-
-            cmd = ("paste " + avgFile + " " + stdevsFile + " " +
-                   sterrFile + " | " +
-                   " columns time   intact_hits   intact_extras intact_score"
-                   "                   hpc_hits      hpc_extras    hpc_score"
-                   "                   acc_hits      acc_extras    acc_score "
-                   "              S_intact_hits S_intact_extras S_intact_score"
-                   "                 S_hpc_hits    S_hpc_extras    S_hpc_score"
-                   "                 S_acc_hits    S_acc_extras    S_acc_score "
-                   "              E_intact_hits E_intact_extras E_intact_score"
-                   "                  E_hpc_hits   E_hpc_extras    E_hpc_score"
-                   "                  E_acc_hits   E_acc_extras    E_acc_score "
-                   " > " + statsFile)
-            p = subprocess.Popen(cmd, shell=True)
-            p.wait()
-
-        if (plotToFile):
-            outputOption = " -o " + plotFile
-        else:
-            outputOption = ""
-            print(title)
-        cmd = ("nsplot " + plotFlags + outputOption +
-               " -s " + allScores +
-               " -t " + '"' + title +
-               '" < ' + statsFile)
-        p = subprocess.Popen(cmd, shell=True)
-        p.wait()
-        print(cmd)
+                cmd = ("mpirun -n " + str(nranks) + " ./ns " + nsArgs + " " + propsPath + " > " + rawFile)
+                print(cmd)
+                os.system(cmd)
 
 if __name__ == "__main__":
     main()

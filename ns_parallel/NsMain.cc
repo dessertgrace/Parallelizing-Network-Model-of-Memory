@@ -2,6 +2,7 @@
 using std::vector;
 
 #include <getopt.h>
+#include <mpi.h>
 
 #include "Util.hh"
 #include "Sched.hh"
@@ -9,6 +10,7 @@ using std::vector;
 #include "NsSystem.hh"
 #include "NsTract.hh"
 #include "NsLayer.hh"
+#include "NsGlobals.hh"
 
 static NsSystem *nsSystem;
 
@@ -438,6 +440,11 @@ static const char *syntax()
  */
 int main(int argc, char *argv[])
 {
+    // init MPI
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+
     // Initialize the random number generator
     //
     Util::initRand();
@@ -534,9 +541,12 @@ int main(int argc, char *argv[])
 
     // Print out the property value
     //
+    /*
     fmt::print("===================================\n");
     fmt::print("{}", props.toString());
     fmt::print("===================================\n");
+    */
+
 
     // Create the system
     //
@@ -558,9 +568,13 @@ int main(int argc, char *argv[])
     printSystem();
     scheduleEvents();
 
+    /*
     props.reportUnused(true);
 
     // Run the simulation
     //
     run();
+    */
+
+    MPI_Finalize();
 }

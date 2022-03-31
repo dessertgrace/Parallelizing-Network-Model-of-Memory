@@ -18,4 +18,8 @@ extern uint  simTime; // hours
  * The size of the simulation time step
  */
 extern uint  timeStep; // hours
+
+extern int rank; // MPI rank
+extern int size; // MPI comm size
+
 #endif

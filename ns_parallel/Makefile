@@ -1,5 +1,6 @@
 ENDLIST =
 
+CXX = mpicxx
 COMPFLAGS=-std=c++11 -Wall -Wextra -pedantic -DTRACE_ON -I../include
 
 #CXXFLAGS = $(COMPFLAGS) -O0 -g -no-pie -pg
