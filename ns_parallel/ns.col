@@ -1,0 +1,12 @@
+# Plot colors
+#
+
+intact_score     0x0000FF    # Blue
+hpc_score        0x007F00    # Dark green
+acc_score        0xFF0000    # Red
+A                0x007F00    # Dark green
+B                0x00007f    # Dark blue
+C                0x000000    # Black
+D                0x7F0000    # Brown
+E                0x7F7F7F    # Grey
+F	         0xFF00FF    # Magenta

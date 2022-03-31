@@ -1,0 +1,11 @@
+title:                  HPC lesion 5 days before reactivation
+#
+# This should not cause memory loss, but it does, see labnotes.txt 2019-03-07
+#
+
+include:                ns_common.inc
+
+timeStepChanges::       { 0::00 1 1::00 24 30::00 1 31::00 24 } # when, step(hours), ...
+reactivateTimes:        { 30 }
+hpcLesionTime:          25::00
+

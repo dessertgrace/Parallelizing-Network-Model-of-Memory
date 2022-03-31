@@ -1,0 +1,6 @@
+title:                  HPC lesion at 5d
+
+include:                ns_common.inc
+
+hpcLesionTime:          5::00
+
