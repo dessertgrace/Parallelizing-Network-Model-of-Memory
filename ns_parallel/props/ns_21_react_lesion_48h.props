@@ -1,0 +1,8 @@
+title:                  Reactivation, HPC lesion @ react+48h
+
+include:                ns_common.inc
+
+timeStepChanges::       { 0::00 1 1::00 24 30::00 1 32::00 24 } # when, step(hours), ...
+reactivateTimes:        { 30 }
+hpcLesionTime:          32
+

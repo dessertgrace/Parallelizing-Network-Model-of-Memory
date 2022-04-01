@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+# Plot output of an ns run
+#
+
+function usage {
+   echo 2>&1 "Usage: $0 [-w <width>] [-h <height>] [-t <title>] [-x <xlabel>] [-y <ylabel>] [-lt ltfile | -s <scores>] [-c <colorfile>] [-v] [<datafile>]"
+   echo 2>&1
+   echo 2>&1 "You can also specify additional options accepted by plot:"
+   plot --help
+   exit 1
+}
+
+ltfile=ns.lt
+colorfile=ns.col
+plotoptions=
+yrange="[-10:110]"
+title=" "
+width=350
+height=200
+varbands=
+
+xlabel="Time (days)"
+ylabel="Score"
+
+while [ $# -gt 0 ]
+do
+    case "$1" in
+        --help) usage;;
+        -lt)    ltfile="$2"; shift;;
+        -s)     scores="$2"; shift;;
+        -c)     colorfile="$2"; shift;;
+        -w)     width="$2"; shift;;
+        -h)     height="$2"; shift;;
+        -t)     title="$2"; shift;;
+        -x)     xlabel="$2"; shift;;
+        -y)     ylabel="$2"; shift;;
+        -v)     varbands=true;;
+	--)	shift; break;;
+	-*)     plotoptions="$plotoptions $1 $2"; shift;;
+	*)	if [ "$datafile" == "" ]
+                then
+                        datafile=$1;
+                else
+                        echo "extra arg: $1"
+                        usage
+                fi;;
+    esac
+    shift
+done
+
+# word counter function
+wordcount() { echo $#; }
+
+v_option=
+
+if [ "$scores" != "" ]; then
+    scores=`echo $scores|sed 's/,/ /g'`
+    columns_cmd="columns time $scores"
+    if [ "$varbands" != "" ]; then
+        # add the sterr columns
+        columns_cmd="$columns_cmd `echo $scores | sed 's/\</S_'/g`"
+        (( vcol = `wordcount $scores` + 2 )) # including the 'time' column
+        v_option="-v $vcol"
+    else
+        plotoptions="$plotoptions -x11"
+    fi
+
+    ltfile=/tmp/$$.lt
+    #set -i i
+    i=1
+    for m in $scores; do
+        color=`egrep "^\<$m\>" $colorfile | awk '{print $2}'`
+        if [ "$color" == "" ]; then
+            echo $m not found in $colorfile
+            exit
+        fi
+
+        echo "set linetype $i  lc rgb \"$color\" lw 2" >> $ltfile
+        (( i++ ))
+    done
+else
+    columns_cmd=cat
+fi
+
+cat $datafile | $columns_cmd | plot -u  -t " " -k "bmargin left horizontal spacing 1 samplen 1" -x "$xlabel" -y "$ylabel" -t "$title" -w "$width" -h "$height" $v_option $plotoptions -lt $ltfile

@@ -1,7 +1,9 @@
 ENDLIST =
 
+CXX = mpicxx
+
 #CXXFLAGS = -std=c++11 -Wall -DTRACE_ON -I../include -O0  -g -pg -no-pie -DUTIL_THREADED 
-CXXFLAGS = -std=c++11 -Wall -DTRACE_ON -I../include -O3 -pg -no-pie -DNDEBUG -DUTIL_THREADED 
+CXXFLAGS = -std=c++11 -Wall -DTRACE_ON -I../include -O3 -pg -no-pie -DNDEBUG 
 CFLAGS = -I../include -O3 -DNDEBUG
 
 ARFLAGS = rvU
