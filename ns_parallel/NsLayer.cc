@@ -57,7 +57,7 @@ void NsLayer::setPattern(const NsPattern &pat)
     if (!isFrozen) {
         clear();
         for (auto id : pat) {
-            units[id]->isActive = true;
+            *(units[id]->isActive) = true;
         }
     }
 }
@@ -88,7 +88,7 @@ const string &NsLayer::setRandomPattern()
 void NsLayer::clear()
 {
     for(auto u : units) {
-        u->isActive = false;
+        *(u->isActive) = false;
     }
 }
 
@@ -120,7 +120,7 @@ void NsLayer::randomize()
 {
     ABORT_IF(isFrozen, "Makes no sense");
     for(auto u : units) {
-        u->isActive = (Util::randDouble(0.0, 1.0) < k);
+        *(u->isActive) = (Util::randDouble(0.0, 1.0) < k);
     }
 }
 
@@ -179,7 +179,7 @@ uint NsLayer::getNumActive() const
 {
     uint numActive = 0;
     for(auto u : units) {
-        if (u->isActive) {
+        if (*(u->isActive)) {
             numActive++;
         }
     }
@@ -204,7 +204,7 @@ uint NsLayer::getNumHits(const string &targetId) const
     NsPattern target = definedPatterns.at(targetId);
     uint ret = 0;
     for (auto id : target) {
-        if(units[id]->isActive) ret++;
+        if(*(units[id]->isActive)) ret++;
     }
     return ret;
 }
@@ -247,7 +247,7 @@ void NsLayer::printGrid(const string &tag, const string &targetId) const
             infoTrace("|");
             for (uint col = 0; col < width; col++) {
                 infoTrace("{}{}",
-                           units[row * width + col]->isActive ? '*' : ' ',
+                           *(units[row * width + col]->isActive) ? '*' : ' ',
                            (col < width - 1) ? " " : "");
             }
             infoTrace("|\n");

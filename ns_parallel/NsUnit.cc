@@ -1,6 +1,7 @@
 #include "NsSystem.hh"
 #include "NsUnit.hh"
 #include "MathUtil.hh"
+#include "NsGlobals.hh"
 
 NsUnit::NsUnit(const NsLayer *layer, uint index, uint gid)
     : layer(layer), 
@@ -9,24 +10,26 @@ NsUnit::NsUnit(const NsLayer *layer, uint index, uint gid)
       actFuncK(props.getDouble("actFuncK")),
       actThreshold(props.getDouble("actThreshold")),
       isFrozen(false),
-      isActive(false),
-      newIsActive(false),
+      isActive(&global_activations[gid]),
+      newIsActive(0),
       lastNetInput(0.0)
-{}
+{
+    *isActive = 0;
+}
 
 /**
  * Probability of activation is a sigmoid function of net input
  * @param netInput Net input
  */
-bool NsUnit::activationFunction(double netInput)
+uint8_t NsUnit::activationFunction(double netInput)
 {
-    if (netInput <= actThreshold) return false;
+    if (netInput <= actThreshold) return 0;
 
     double probOfActivation =
         MathUtil::asigmoid(netInput, actFuncK, layer->inhibition);
     //infoTrace("XXX {}\n", netInput);
 
-    double ret = Util::randDouble(0.0, 1.0) < probOfActivation;
+    uint8_t ret = Util::randDouble(0.0, 1.0) < probOfActivation;
 
     //fmt::print("activationFunction: {} {}\n",
     //           netInput - layer->inhibition, ret);
@@ -43,7 +46,7 @@ bool NsUnit::activationFunction(double netInput)
 void NsUnit::computeNewActivation()
 {
     if (isFrozen) {
-        newIsActive = false;
+        newIsActive = 0;
     } else {
         // Calculate net input
         //
@@ -75,14 +78,14 @@ void NsUnit::computeNewActivation()
 
 void NsUnit::applyNewActivation()
 {
-    isActive = newIsActive;
+    *isActive = newIsActive;
 }
 
 void NsUnit::setFrozen(bool state)
 {
     isFrozen = state;
     if (isFrozen) {
-        isActive = false;
+        *isActive = false;
     }
 }
 
@@ -104,5 +107,5 @@ string NsUnit::toStr(uint iLvl, const string &iStr) const
 {
     return fmt::format("{}[{} {}]",
                        Util::repeatStr(iStr, iLvl),
-                       id, isActive ? 'a' : 'i');
+                       id, *isActive ? 'a' : 'i');
 }

@@ -39,6 +39,9 @@ static void printSystem()
  */
 static void buildSystem()
 {
+    // create global isActive array
+    init_global_activations();
+    
     // Create the layers (units)
     nsSystem->addLayer(hpcLayerId, hpcLayerTypeId);
     nsSystem->addLayer(accLayerId, ncLayerTypeId);
