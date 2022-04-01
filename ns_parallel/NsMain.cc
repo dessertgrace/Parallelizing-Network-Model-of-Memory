@@ -558,7 +558,6 @@ int main(int argc, char *argv[])
     fmt::print("===================================\n");
     */
 
-
     // Create the system
     //
     nsSystem = new NsSystem(props);
