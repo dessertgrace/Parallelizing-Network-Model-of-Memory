@@ -251,7 +251,7 @@ void NsLayer::printGrid(const string &tag, const string &targetId) const
             infoTrace("|");
             for (uint col = 0; col < width; col++) {
                 infoTrace("{}{}",
-                           *(units[row * width + col]->isActive) ? '*' : ' ',
+                           global_activations[layer_gids[row * width + col]] ? '*' : ' ',
                            (col < width - 1) ? " " : "");
             }
             infoTrace("|\n");

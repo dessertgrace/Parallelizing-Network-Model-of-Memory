@@ -587,15 +587,13 @@ int main(int argc, char *argv[])
     printSystem();
     scheduleEvents();
 
-    nsSystem->printState();
-
-    // std::cout << nsSystem->toStr(0, "   ") << std::endl;
+    //nsSystem->printState();
 
     //props.reportUnused(true);
 
     // Run the simulation
     //
-    //run();
+    run();
 
 
     MPI_Finalize();
