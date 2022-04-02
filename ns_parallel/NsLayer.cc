@@ -33,6 +33,7 @@ NsLayer::NsLayer(const string &id, const string &type)
             local_gids.insert(n_units_global);
         }
         layer_gids.push_back(n_units_global);
+        gid_id_map.insert({n_units_global, id + "." + fmt::format("{:02}", i)});
         n_units_global++;
     }
 }
@@ -181,8 +182,8 @@ void NsLayer::maintain()
 uint NsLayer::getNumActive() const
 {
     uint numActive = 0;
-    for(auto u : units) {
-        if (*(u->isActive)) {
+    for(auto gid : layer_gids) {
+        if (global_activations[gid]) {
             numActive++;
         }
     }

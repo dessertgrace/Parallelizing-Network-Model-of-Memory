@@ -456,9 +456,14 @@ int main(int argc, char *argv[])
 
     // get every rank to write to its own output file
     char fname_stdout[100];
+    char fname_stderr[100];
     sprintf(fname_stdout, "%s_%d.raw", argv[argc-1], rank);
+    sprintf(fname_stderr, "%s_%d.err", argv[argc-1], rank);
     std::ofstream out(fname_stdout);
     std::cout.rdbuf(out.rdbuf());
+
+    freopen(fname_stdout, "a", stdout);
+    freopen(fname_stderr, "a", stderr);
 
     // Initialize the random number generator
     //
@@ -579,15 +584,18 @@ int main(int argc, char *argv[])
     // Initialize the system and schedule events
     //
     buildSystem();
+    printSystem();
     scheduleEvents();
 
-    std::cout << nsSystem->toStr(0, "   ") << std::endl;
+    nsSystem->printState();
+
+    // std::cout << nsSystem->toStr(0, "   ") << std::endl;
 
     //props.reportUnused(true);
 
     // Run the simulation
     //
-    // run();
+    //run();
 
 
     MPI_Finalize();

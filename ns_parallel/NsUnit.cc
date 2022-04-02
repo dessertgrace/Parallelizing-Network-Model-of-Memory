@@ -15,7 +15,6 @@ NsUnit::NsUnit(const NsLayer *layer, uint index, uint gid)
       lastNetInput(0.0)
 {
     *isActive = 0;
-    gid_id_map.insert({gid, id});
 }
 
 /**
