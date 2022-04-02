@@ -454,6 +454,8 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
+    double time_before_setup = MPI_Wtime();
+
     // get every rank to write to its own output file
     char fname_stdout[100];
     char fname_stderr[100];
@@ -593,8 +595,16 @@ int main(int argc, char *argv[])
 
     // Run the simulation
     //
+
+    double time_before_run = MPI_Wtime();
+
     run();
 
+    double time_after_run = MPI_Wtime();
+
+    fmt::print("timing: {} {}\n",
+               time_after_run - time_before_setup,
+               time_after_run - time_before_run);
 
     MPI_Finalize();
 }

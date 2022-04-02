@@ -56,7 +56,7 @@ v_option=
 
 if [ "$scores" != "" ]; then
     scores=`echo $scores|sed 's/,/ /g'`
-    columns_cmd="columns time $scores"
+    columns_cmd="./columns time $scores"
     if [ "$varbands" != "" ]; then
         # add the sterr columns
         columns_cmd="$columns_cmd `echo $scores | sed 's/\</S_'/g`"
@@ -83,4 +83,4 @@ else
     columns_cmd=cat
 fi
 
-cat $datafile | $columns_cmd | plot -u  -t " " -k "bmargin left horizontal spacing 1 samplen 1" -x "$xlabel" -y "$ylabel" -t "$title" -w "$width" -h "$height" $v_option $plotoptions -lt $ltfile
+cat $datafile | $columns_cmd | ./plot -u  -t " " -k "bmargin left horizontal spacing 1 samplen 1" -x "$xlabel" -y "$ylabel" -t "$title" -w "$width" -h "$height" $v_option $plotoptions -lt $ltfile

@@ -188,7 +188,7 @@ void NsConnection::learn(double learnRate, uint numStimCycles, const char *tag)
  */
 double  NsConnection::getStrength() const
 {
-    return (numCiAmpars + numCpAmpars) / 100 /*maxPsdSize*/;
+    return (numCiAmpars + numCpAmpars) / maxPsdSize /*maxPsdSize*/;
 }
 
 void NsConnection::printStateHdr()
