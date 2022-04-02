@@ -94,6 +94,13 @@ void NsSystem::settle()
         for (auto &l : layers) {
             if (!l.second->isFrozen) {
                 l.second->applyNewActivations();
+            }
+        }
+
+        synchronize();
+
+        for (auto &l : layers) {
+            if (!l.second->isFrozen) {
                 l.second->adjustInhibition();
             }
         }

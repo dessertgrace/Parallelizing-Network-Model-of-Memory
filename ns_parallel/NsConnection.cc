@@ -1,4 +1,5 @@
 #include <limits.h>
+#include <iostream>
 
 #include "MathUtil.hh"
 #include "NsSystem.hh"
@@ -103,7 +104,7 @@ void NsConnection::amparTrafficking(double cpAmparRemovalRate,
                    cpAmparRemovalRate * (numCpAmpars - minNumCpAmpars));
 
     if (isPotentiated && !psiIsOn) {
-        if (global_activations[fromUnit] && toUnit->isActive) {
+        if (global_activations[fromUnit] && *(toUnit->isActive)) {
             double delta = Util::min(ciAmparInsertionRate,
                                      psdSize - (numCpAmpars + numCiAmpars));
             setNumCiAmpars(numCiAmpars + delta);
@@ -156,7 +157,7 @@ void NsConnection::stimulate(double learnRate, uint numStimCycles,
  */
 void NsConnection::learn(double learnRate, uint numStimCycles, const char *tag)
 {
-    if (global_activations[fromUnit] && toUnit->isActive) {
+    if (global_activations[fromUnit] && *(toUnit->isActive)) {
         for (uint i = 0; i < numStimCycles; i++) {
             psdSize += learnRate * (maxPsdSize - psdSize);
         }

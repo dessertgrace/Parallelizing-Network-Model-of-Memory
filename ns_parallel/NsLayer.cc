@@ -43,12 +43,12 @@ void NsLayer::makePattern(const string &patId)
     ABORT_IF(definedPatterns.count(patId) != 0, "Duplicate pattern ID");
     NsPattern p;
     if (orthogonalPatterns) {
-        for (uint i = 0; i < k * units.size(); i++) {
-            ABORT_IF(nextPatternUnit >= units.size(), "too many patterns");
-            p.push_back(nextPatternUnit++);
+        for (uint i = 0; i < k * layer_gids.size(); i++) {
+            ABORT_IF(nextPatternUnit >= layer_gids.size(), "too many patterns");
+            p.push_back(layer_gids[nextPatternUnit++]);
         }
     } else {
-        p = Util::randUniqueUintList(k * units.size(), units.size());
+        p = Util::randUniqueUintList(k * layer_gids.size(), layer_gids.size());
     }
     definedPatterns.insert({patId, p});
     definedPatternIds.push_back(patId);
@@ -61,7 +61,7 @@ void NsLayer::setPattern(const NsPattern &pat)
     if (!isFrozen) {
         clear();
         for (auto id : pat) {
-            *(units[id]->isActive) = true;
+            global_activations[id] = true;
         }
     }
 }
@@ -91,8 +91,8 @@ const string &NsLayer::setRandomPattern()
 
 void NsLayer::clear()
 {
-    for(auto u : units) {
-        *(u->isActive) = false;
+    for(auto gid : layer_gids) {
+        global_activations[gid] = false;
     }
 }
 
@@ -103,7 +103,7 @@ void NsLayer::clear()
 void NsLayer::adjustInhibition()
 {
     ABORT_IF(isFrozen, "Makes no sense");
-    int target = k * units.size();
+    int target = k * layer_gids.size();
     int error = (int) getNumActive() - target;
 
     // make an adjustment to the inhibition level
@@ -126,6 +126,7 @@ void NsLayer::randomize()
     for(auto u : units) {
         *(u->isActive) = (Util::randDouble(0.0, 1.0) < k);
     }
+    synchronize();
 }
 
 /**
@@ -208,7 +209,7 @@ uint NsLayer::getNumHits(const string &targetId) const
     NsPattern target = definedPatterns.at(targetId);
     uint ret = 0;
     for (auto id : target) {
-        if(*(units[id]->isActive)) ret++;
+        if(global_activations[id]) ret++;
     }
     return ret;
 }

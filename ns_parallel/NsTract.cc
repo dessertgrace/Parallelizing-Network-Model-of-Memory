@@ -223,7 +223,7 @@ void NsTract::reactivate()
     calcDepotProb();
 
     for (auto c: connections) {
-        if (global_activations[c->fromUnit] && c->toUnit->isActive) {
+        if (global_activations[c->fromUnit] && *(c->toUnit->isActive)) {
             c->reactivate();
         }
     }

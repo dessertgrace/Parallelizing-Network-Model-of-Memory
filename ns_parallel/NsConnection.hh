@@ -24,7 +24,7 @@ public:
     double getStrength() const;
     void printState() const;
     string toStr(uint iLvl = 0, const string &iStr = "   ") const;
-    bool isHebbian() const { return global_activations[fromUnit] && toUnit->isActive; }
+    bool isHebbian() const { return global_activations[fromUnit] && *(toUnit->isActive); }
 
     bool isPotentiated;
     const uint fromUnit;
