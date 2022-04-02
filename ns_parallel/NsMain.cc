@@ -41,12 +41,15 @@ static void buildSystem()
 {
     // create global isActive array
     init_global_activations();
-    
+
     // Create the layers (units)
     nsSystem->addLayer(hpcLayerId, hpcLayerTypeId);
     nsSystem->addLayer(accLayerId, ncLayerTypeId);
     nsSystem->addLayer(sc0LayerId, ncLayerTypeId);
     nsSystem->addLayer(sc1LayerId, ncLayerTypeId);
+
+    // synchronize values across ranks
+    synchronize();
 
     // Create the tracts (connections)
     #if 0
@@ -578,18 +581,14 @@ int main(int argc, char *argv[])
     // Initialize the system and schedule events
     //
     buildSystem();
-    //printSystem();
-    std::cout << "n_units_global: " << n_units_global << std::endl;
-    std::cout << nsSystem->toStr(0, "   ") << std::endl;
     scheduleEvents();
 
-    /*
     props.reportUnused(true);
 
     // Run the simulation
     //
-    run();
-    */
+    // run();
+
 
     MPI_Finalize();
 }

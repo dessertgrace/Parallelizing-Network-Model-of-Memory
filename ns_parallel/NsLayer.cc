@@ -29,7 +29,9 @@ NsLayer::NsLayer(const string &id, const string &type)
         // round robin assignment of units to ranks
         if (n_units_global % size == rank) {
             units.push_back(new NsUnit(this, i, n_units_global));
+            local_gids.insert(n_units_global);
         }
+        layer_gids.push_back(n_units_global);
         n_units_global++;
     }
 }

@@ -55,6 +55,7 @@ public:
     bool isFrozen;
     bool isLesioned;
     vector<NsUnit *> units;
+    vector<uint> layer_gids;
     bool orthogonalPatterns;
     uint nextPatternUnit;
     unordered_map<string, NsPattern> definedPatterns;

@@ -100,12 +100,12 @@ void NsUnit::printStateHdr()
 
 void NsUnit::printState() const
 {
-    infoTrace("{} unit {} {}\n", simTime / 24., id, isActive ? 'a' : 'i');
+    infoTrace("{} unit {} {}\n", simTime / 24., id, *isActive ? 'a' : 'i');
 }
 
 string NsUnit::toStr(uint iLvl, const string &iStr) const
 {
-    return fmt::format("{}[{} {}]",
+    return fmt::format("{}[{} {} {}]",
                        Util::repeatStr(iStr, iLvl),
-                       id, *isActive ? 'a' : 'i');
+                       id, gid, *isActive ? 'a' : 'i');
 }

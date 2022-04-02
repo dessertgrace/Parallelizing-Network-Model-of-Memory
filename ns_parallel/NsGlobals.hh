@@ -30,6 +30,9 @@ extern int size; // MPI comm size
 extern uint n_units_global; // total global number of units (neurons)
 extern std::unordered_set <uint> local_gids;
 
+extern int *counts;
+extern int *displacements;
+
 extern uint8_t *global_activations;
 void init_global_activations();
 void synchronize();
