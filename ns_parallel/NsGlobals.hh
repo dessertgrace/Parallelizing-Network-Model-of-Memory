@@ -3,6 +3,10 @@
 
 #include "Props.hh"
 #include <unordered_set>
+#include <map>
+#include <string>
+
+using std::string;
 
 /**
  * Property values, as specified on the command line and/or
@@ -29,6 +33,7 @@ extern int size; // MPI comm size
 
 extern uint n_units_global; // total global number of units (neurons)
 extern std::unordered_set <uint> local_gids;
+extern std::map <uint, string> gid_id_map;
 
 extern int *counts;
 extern int *displacements;

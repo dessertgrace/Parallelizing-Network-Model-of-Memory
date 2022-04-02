@@ -52,13 +52,11 @@ static void buildSystem()
     synchronize();
 
     // Create the tracts (connections)
-    #if 0
     nsSystem->addBiTract(hpcLayerId, accLayerId, hpcTractTypeId);
     nsSystem->addBiTract(hpcLayerId, sc0LayerId, hpcTractTypeId);
     nsSystem->addBiTract(hpcLayerId, sc1LayerId, hpcTractTypeId);
     nsSystem->addBiTract(accLayerId, sc0LayerId, ncTractTypeId);
     nsSystem->addBiTract(accLayerId, sc1LayerId, ncTractTypeId);
-    #endif
 }
 
 /**
@@ -583,7 +581,9 @@ int main(int argc, char *argv[])
     buildSystem();
     scheduleEvents();
 
-    props.reportUnused(true);
+    std::cout << nsSystem->toStr(0, "   ") << std::endl;
+
+    //props.reportUnused(true);
 
     // Run the simulation
     //

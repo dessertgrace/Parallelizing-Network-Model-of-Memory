@@ -3,25 +3,30 @@
 #include "MathUtil.hh"
 #include "NsSystem.hh"
 #include "NsConnection.hh"
+#include "NsGlobals.hh"
 
 /*
  * Constructor
  */
 NsConnection::NsConnection(const NsTract *tract,
-                           const NsUnit *fromUnit,
+                           const uint fromUnit,
                            NsUnit *toUnit)
     : forceStaticInit(initializeStatics()),
       isPotentiated(false),
       fromUnit(fromUnit),
       toUnit(toUnit),
       tract(tract),
-      id(fmt::format("{}-{}", fromUnit->id, toUnit->id)),
+      id(fmt::format("{}->{}", fromUnit, toUnit->id)),
       psdSize(minPsdSize),
       numCiAmpars(minNumCiAmpars),
       numCpAmpars(minNumCpAmpars),
       psiIsOn(false)
 {
     toUnit->inConnections.push_back(this);
+    auto it = gid_id_map.find(fromUnit);
+    if (it != gid_id_map.end()) {
+        id = fmt::format("{}->{}", it->second, toUnit->id);
+    }
 }
 
 /*
@@ -98,7 +103,7 @@ void NsConnection::amparTrafficking(double cpAmparRemovalRate,
                    cpAmparRemovalRate * (numCpAmpars - minNumCpAmpars));
 
     if (isPotentiated && !psiIsOn) {
-        if (fromUnit->isActive && toUnit->isActive) {
+        if (global_activations[fromUnit] && toUnit->isActive) {
             double delta = Util::min(ciAmparInsertionRate,
                                      psdSize - (numCpAmpars + numCiAmpars));
             setNumCiAmpars(numCiAmpars + delta);
@@ -151,7 +156,7 @@ void NsConnection::stimulate(double learnRate, uint numStimCycles,
  */
 void NsConnection::learn(double learnRate, uint numStimCycles, const char *tag)
 {
-    if (fromUnit->isActive && toUnit->isActive) {
+    if (global_activations[fromUnit] && toUnit->isActive) {
         for (uint i = 0; i < numStimCycles; i++) {
             psdSize += learnRate * (maxPsdSize - psdSize);
         }

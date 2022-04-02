@@ -43,9 +43,9 @@ NsTract::NsTract(const string &id,
     CHECK_RANGE(maxE3DepotProb01h,       0.0, 1.0);
     CHECK_RANGE(maxPotProb01h,           0.0, 1.0);
 
-    for (auto fu : fromLayer->units) {
+    for (auto fu : fromLayer->layer_gids) {
         for (auto tu : toLayer->units) {
-            if (fu != tu) {
+            if (fu != tu->gid) {
                 connections.push_back(new NsConnection(this, fu, tu));
             }
         }
@@ -223,7 +223,7 @@ void NsTract::reactivate()
     calcDepotProb();
 
     for (auto c: connections) {
-        if (c->fromUnit->isActive && c->toUnit->isActive) {
+        if (global_activations[c->fromUnit] && c->toUnit->isActive) {
             c->reactivate();
         }
     }

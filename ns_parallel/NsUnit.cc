@@ -15,6 +15,7 @@ NsUnit::NsUnit(const NsLayer *layer, uint index, uint gid)
       lastNetInput(0.0)
 {
     *isActive = 0;
+    gid_id_map.insert({gid, id});
 }
 
 /**
@@ -53,7 +54,7 @@ void NsUnit::computeNewActivation()
         double netInput = 0.0;
         uint numActiveInputs = 0;
         for (auto c : inConnections) {
-            if (c->fromUnit->isActive && c->getStrength() > 0.0) {
+            if (global_activations[c->fromUnit] && c->getStrength() > 0.0) {
                 netInput += c->getStrength();
                 numActiveInputs++;
             }

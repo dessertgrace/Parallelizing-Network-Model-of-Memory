@@ -1,5 +1,6 @@
 #include "NsSystem.hh"
 #include "NsLayer.hh"
+#include "MathUtil.hh"
 #include "NsGlobals.hh"
 
 /**
@@ -27,7 +28,7 @@ NsLayer::NsLayer(const string &id, const string &type)
     uint numUnits = width * height;
     for (uint i = 0; i < numUnits; i++) {
         // round robin assignment of units to ranks
-        if (n_units_global % size == rank) {
+        if (n_units_global % size == (unsigned)rank) {
             units.push_back(new NsUnit(this, i, n_units_global));
             local_gids.insert(n_units_global);
         }

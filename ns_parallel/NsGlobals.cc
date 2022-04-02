@@ -3,6 +3,8 @@
 #include <unordered_set>
 #include <mpi.h>
 
+using std::string;
+
 
 /**
  * Definition of global variables declared in Globals.hh
@@ -20,6 +22,7 @@ int size;
 uint n_units_global = 0;
 
 std::unordered_set <uint> local_gids;
+std::map <uint, string> gid_id_map;
 
 uint8_t *global_activations;
 int *counts;
