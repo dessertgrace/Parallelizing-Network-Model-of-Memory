@@ -11,7 +11,7 @@ class NsConnection {
 private:
     bool forceStaticInit;
 public:
-    NsConnection(const NsTract *tract, const NsUnit *from, NsUnit *to);
+    NsConnection(const NsTract *tract, const uint from, NsUnit *to);
     void stimulate(double learnRate, uint numStimCycles, const char *tag);
     void amparTrafficking(double cpAmparRemovalRate,
                           double ciAmparInsertionRate,
@@ -24,10 +24,10 @@ public:
     double getStrength() const;
     void printState() const;
     string toStr(uint iLvl = 0, const string &iStr = "   ") const;
-    bool isHebbian() const { return fromUnit->isActive && toUnit->isActive; }
+    bool isHebbian() const { return global_activations[fromUnit] && *(toUnit->isActive); }
 
     bool isPotentiated;
-    const NsUnit *fromUnit;
+    const uint fromUnit;
     NsUnit *toUnit;
 
 private:
@@ -53,7 +53,7 @@ private:
     void learn(double learnRate, uint numStimCycles, const char *tag);
 
     const  NsTract *tract;
-    const  string  id;
+    string  id;
     double         psdSize;
     double         numCiAmpars;
     double         numCpAmpars;

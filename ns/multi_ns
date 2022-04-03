@@ -190,7 +190,7 @@ def main():
             for i in range(numRuns):
                 print(i)
                 rawFile = outDir + '/' + str(i) + '.raw'
-                cmd = ("ns " + nsArgs + " " + propsPath + " > " + rawFile)
+                cmd = ("./ns " + nsArgs + " " + propsPath + " > " + rawFile)
                 p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT)
                 procs.append(p)
@@ -245,16 +245,16 @@ def main():
         if ((numRuns != 0) or recalc):
             procs = []
 
-            cmd = 'mat -hdr -ind avg ' + outDir + '/[0-9]*.out > ' + avgFile
+            cmd = './mat -hdr -ind avg ' + outDir + '/[0-9]*.out > ' + avgFile
             p = subprocess.Popen(cmd, shell=True)
             procs.append(p)
 
-            cmd = ('mat -hdr -ind -pref S_ stdevs ' + outDir +
+            cmd = ('./mat -hdr -ind -pref S_ stdevs ' + outDir +
                    '/[0-9]*.out > ' + stdevsFile)
             p = subprocess.Popen(cmd, shell=True)
             procs.append(p)
 
-            cmd = ('mat -hdr -ind -pref E_ sterr ' + outDir +
+            cmd = ('./mat -hdr -ind -pref E_ sterr ' + outDir +
                    '/[0-9]*.out > ' + sterrFile)
             p = subprocess.Popen(cmd, shell=True)
             procs.append(p)
@@ -263,7 +263,7 @@ def main():
 
             cmd = ("paste " + avgFile + " " + stdevsFile + " " +
                    sterrFile + " | " +
-                   " columns time   intact_hits   intact_extras intact_score"
+                   " ./columns time   intact_hits   intact_extras intact_score"
                    "                   hpc_hits      hpc_extras    hpc_score"
                    "                   acc_hits      acc_extras    acc_score "
                    "              S_intact_hits S_intact_extras S_intact_score"
@@ -281,7 +281,7 @@ def main():
         else:
             outputOption = ""
             print(title)
-        cmd = ("nsplot " + plotFlags + outputOption +
+        cmd = ("./nsplot " + plotFlags + outputOption +
                " -s " + allScores +
                " -t " + '"' + title +
                '" < ' + statsFile)

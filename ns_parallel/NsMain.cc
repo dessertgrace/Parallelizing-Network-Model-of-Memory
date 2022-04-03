@@ -39,20 +39,24 @@ static void printSystem()
  */
 static void buildSystem()
 {
+    // create global isActive array
+    init_global_activations();
+
     // Create the layers (units)
     nsSystem->addLayer(hpcLayerId, hpcLayerTypeId);
     nsSystem->addLayer(accLayerId, ncLayerTypeId);
     nsSystem->addLayer(sc0LayerId, ncLayerTypeId);
     nsSystem->addLayer(sc1LayerId, ncLayerTypeId);
 
+    // synchronize values across ranks
+    synchronize();
+
     // Create the tracts (connections)
-    #if 0
     nsSystem->addBiTract(hpcLayerId, accLayerId, hpcTractTypeId);
     nsSystem->addBiTract(hpcLayerId, sc0LayerId, hpcTractTypeId);
     nsSystem->addBiTract(hpcLayerId, sc1LayerId, hpcTractTypeId);
     nsSystem->addBiTract(accLayerId, sc0LayerId, ncTractTypeId);
     nsSystem->addBiTract(accLayerId, sc1LayerId, ncTractTypeId);
-    #endif
 }
 
 /**
@@ -450,11 +454,18 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
+    double time_before_setup = MPI_Wtime();
+
     // get every rank to write to its own output file
     char fname_stdout[100];
+    char fname_stderr[100];
     sprintf(fname_stdout, "%s_%d.raw", argv[argc-1], rank);
+    sprintf(fname_stderr, "%s_%d.err", argv[argc-1], rank);
     std::ofstream out(fname_stdout);
     std::cout.rdbuf(out.rdbuf());
+
+    freopen(fname_stdout, "a", stdout);
+    freopen(fname_stderr, "a", stderr);
 
     // Initialize the random number generator
     //
@@ -575,18 +586,25 @@ int main(int argc, char *argv[])
     // Initialize the system and schedule events
     //
     buildSystem();
-    //printSystem();
-    std::cout << "n_units_global: " << n_units_global << std::endl;
-    std::cout << nsSystem->toStr(0, "   ") << std::endl;
+    printSystem();
     scheduleEvents();
 
-    /*
-    props.reportUnused(true);
+    //nsSystem->printState();
+
+    //props.reportUnused(true);
 
     // Run the simulation
     //
+
+    double time_before_run = MPI_Wtime();
+
     run();
-    */
+
+    double time_after_run = MPI_Wtime();
+
+    fmt::print("timing: {} {}\n",
+               time_after_run - time_before_setup,
+               time_after_run - time_before_run);
 
     MPI_Finalize();
 }

@@ -12,7 +12,7 @@ class NsConnection;
 class NsUnit {
 public:
     NsUnit(const NsLayer *layer, uint index, uint gid);
-    bool activationFunction(double netInput);
+    uint8_t activationFunction(double netInput);
     void computeNewActivation();
     void applyNewActivation();
     void setFrozen(bool state);
@@ -27,8 +27,8 @@ public:
     double actFuncK;
     double actThreshold;
     bool isFrozen;
-    bool isActive;
-    bool newIsActive;
+    uint8_t *isActive;
+    uint8_t newIsActive;
     double lastNetInput;
     vector<NsConnection *> inConnections;
 };

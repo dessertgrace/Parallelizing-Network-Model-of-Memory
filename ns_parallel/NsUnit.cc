@@ -1,6 +1,7 @@
 #include "NsSystem.hh"
 #include "NsUnit.hh"
 #include "MathUtil.hh"
+#include "NsGlobals.hh"
 
 NsUnit::NsUnit(const NsLayer *layer, uint index, uint gid)
     : layer(layer), 
@@ -9,24 +10,26 @@ NsUnit::NsUnit(const NsLayer *layer, uint index, uint gid)
       actFuncK(props.getDouble("actFuncK")),
       actThreshold(props.getDouble("actThreshold")),
       isFrozen(false),
-      isActive(false),
-      newIsActive(false),
+      isActive(&global_activations[gid]),
+      newIsActive(0),
       lastNetInput(0.0)
-{}
+{
+    *isActive = 0;
+}
 
 /**
  * Probability of activation is a sigmoid function of net input
  * @param netInput Net input
  */
-bool NsUnit::activationFunction(double netInput)
+uint8_t NsUnit::activationFunction(double netInput)
 {
-    if (netInput <= actThreshold) return false;
+    if (netInput <= actThreshold) return 0;
 
     double probOfActivation =
         MathUtil::asigmoid(netInput, actFuncK, layer->inhibition);
     //infoTrace("XXX {}\n", netInput);
 
-    double ret = Util::randDouble(0.0, 1.0) < probOfActivation;
+    uint8_t ret = Util::randDouble(0.0, 1.0) < probOfActivation;
 
     //fmt::print("activationFunction: {} {}\n",
     //           netInput - layer->inhibition, ret);
@@ -43,19 +46,19 @@ bool NsUnit::activationFunction(double netInput)
 void NsUnit::computeNewActivation()
 {
     if (isFrozen) {
-        newIsActive = false;
+        newIsActive = 0;
     } else {
         // Calculate net input
         //
         double netInput = 0.0;
         uint numActiveInputs = 0;
         for (auto c : inConnections) {
-            if (c->fromUnit->isActive && c->getStrength() > 0.0) {
+            if (global_activations[c->fromUnit] && c->getStrength() > 0.0) {
                 netInput += c->getStrength();
                 numActiveInputs++;
             }
         }
-#if 0
+#if NORMALIZE
         // TODO: this didn't work, because it kills everything when there
         // are many connections. -- It would be nice to find another way to
         // handle different system sizes without twiddling parameters.
@@ -75,14 +78,14 @@ void NsUnit::computeNewActivation()
 
 void NsUnit::applyNewActivation()
 {
-    isActive = newIsActive;
+    *isActive = newIsActive;
 }
 
 void NsUnit::setFrozen(bool state)
 {
     isFrozen = state;
     if (isFrozen) {
-        isActive = false;
+        *isActive = false;
     }
 }
 
@@ -97,12 +100,12 @@ void NsUnit::printStateHdr()
 
 void NsUnit::printState() const
 {
-    infoTrace("{} unit {} {}\n", simTime / 24., id, isActive ? 'a' : 'i');
+    infoTrace("{} unit {} {}\n", simTime / 24., id, *isActive ? 'a' : 'i');
 }
 
 string NsUnit::toStr(uint iLvl, const string &iStr) const
 {
-    return fmt::format("{}[{} {}]",
+    return fmt::format("{}[{} {} {}]",
                        Util::repeatStr(iStr, iLvl),
-                       id, isActive ? 'a' : 'i');
+                       id, gid, *isActive ? 'a' : 'i');
 }
