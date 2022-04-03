@@ -1,0 +1,6 @@
+title:                  HPC lesion at 7d
+
+include:                ns_common.inc
+
+hpcLesionTime:          7::00
+

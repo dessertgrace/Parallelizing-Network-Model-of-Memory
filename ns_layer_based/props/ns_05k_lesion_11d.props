@@ -1,0 +1,6 @@
+title:                  HPC lesion at 11d
+
+include:                ns_common.inc
+
+hpcLesionTime:          11::00
+

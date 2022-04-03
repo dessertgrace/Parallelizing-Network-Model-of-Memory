@@ -1,0 +1,7 @@
+title:                  HPC lesion during maintenance
+
+include:                ns_common.inc
+
+timeStepChanges::       { 0::00 1 1::00 24 30::00 1 31::00 24 } # when, step(hours), ...
+hpcLesionTime:          30::00
+

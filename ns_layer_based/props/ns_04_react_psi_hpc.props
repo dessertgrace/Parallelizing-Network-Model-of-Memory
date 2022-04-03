@@ -1,0 +1,9 @@
+title:                  Reactivation, PSI-->HPC @ react+0h 
+
+include:                ns_common.inc
+
+timeStepChanges::       { 0::00 1 1::00 24 30::00 1 31::00 24 } # when, step(hours), ...
+hpcPsiTimes:            { 29::23 30::09 }
+reactivateTimes:        { 30 }
+
+
