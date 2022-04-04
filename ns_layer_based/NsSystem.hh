@@ -11,6 +11,9 @@ using std::unordered_map;
 #include "NsLayer.hh"
 #include "NsTract.hh"
 #include "NsPattern.hh"
+#include <mpi.h>
+#include <vector>
+#include <tuple>
 
 
 static const string hpcLayerId = "HPC";
@@ -87,6 +90,7 @@ public:
     void setFrozen(const string &layerId, bool state);
     void lesion(const string &layerId);
     void settle();
+    void synchronize();
     void runBackgroundProcesses();
     void retrieve(const string &cueLayerId, const string &patternId,
                   const string &tag);
@@ -107,6 +111,8 @@ public:
 
     unordered_map<string, NsLayer *> layers;
     unordered_map<string, NsTract *> tracts;
+
+    std::vector<std::tuple<int, int, MPI_Comm>> synchronization_components;
 
     uint trainNumStimCycles;
     uint consNumStimCycles;

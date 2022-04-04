@@ -33,6 +33,7 @@ int *counts;
 int *displacements;
 
 std::map <uint, string> gid_id_map;
+std::vector<std::string> layer_names;
 
 
 void init_counts_displacements() {
@@ -46,7 +47,7 @@ void init_counts_displacements() {
         if (i < remainder) {
             counts[i] = count + 1;
         } else {
-            counts[i] == count;
+            counts[i] = count;
         }
         if (i > 0) {
             displacements[i] = displacements[i - 1] + counts[i - 1];

@@ -1,4 +1,8 @@
 #include "NsSystem.hh"
+#include "NsGlobals.hh"
+#include <mpi.h>
+
+MPI_Request reqs[3];
 
 /**
  * Constructor
@@ -54,8 +58,38 @@ void NsSystem::addTract(const string &fromLayerId,
 void NsSystem::addBiTract(const string &layer1Id, const string &layer2Id,
                           const string &type)
 {
+    int layer1_id = layers.at(layer1Id)->intID;
+    int layer2_id = layers.at(layer2Id)->intID;
+    MPI_Comm inter_comm;
+    if (layer_id == layer1_id) {
+        MPI_Intercomm_create(layer_comm, 0, MPI_COMM_WORLD, layer2_id, 99+(layer1_id + 1)*layer2_id, &inter_comm);
+        synchronization_components.push_back(std::make_tuple(layer1_id, layer2_id, inter_comm));
+    } else if (layer_id == layer2_id) {
+        MPI_Intercomm_create(layer_comm, 0, MPI_COMM_WORLD, layer1_id, 99+(layer1_id + 1)*layer2_id, &inter_comm);
+        synchronization_components.push_back(std::make_tuple(layer1_id, layer2_id, inter_comm));
+    }
     addTract(layer1Id, layer2Id, type);
     addTract(layer2Id, layer1Id, type);
+}
+
+void NsSystem::synchronize()
+{
+    int i = 0;
+    for (auto const& tup : synchronization_components) {
+        int l1, l2;
+        MPI_Comm comm;
+        std::tie(l1, l2, comm) = tup;
+        if (layer_id == l1) {
+            MPI_Iallgatherv(&(layers.at(layer_names[l1])->activations[displacements[world_rank/4]]),
+                            counts[world_rank/4], MPI_UINT8_T, &(layers.at(layer_names[l2])->activations[0]),
+                            counts, displacements, MPI_UINT8_T, comm, &reqs[i++]);
+        } else if (layer_id == l2) {
+            MPI_Iallgatherv(&(layers.at(layer_names[l2])->activations[displacements[world_rank/4]]),
+                            counts[world_rank/4], MPI_UINT8_T, &(layers.at(layer_names[l1])->activations[0]),
+                            counts, displacements, MPI_UINT8_T, comm, &reqs[i++]);
+        }
+    }
+    MPI_Waitall(i, reqs, MPI_STATUSES_IGNORE);
 }
 
 /**
@@ -97,7 +131,7 @@ void NsSystem::settle()
             }
         }
 
-        // synchronize();
+        synchronize();
 
         for (auto &l : layers) {
             if (!l.second->isFrozen) {

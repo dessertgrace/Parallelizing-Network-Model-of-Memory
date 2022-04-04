@@ -38,6 +38,7 @@ extern int layer_size;     // total number of ranks in layer
 
 extern uint n_units_global;
 extern std::map <uint, string> gid_id_map;
+extern std::vector<std::string> layer_names;
 
 extern int global_layer_count;
 

@@ -28,6 +28,7 @@ NsLayer::NsLayer(const string &id, const string &type)
 {
     size = width * height;
     activations = new uint8_t [size];
+    layer_names.push_back(id);
     for (uint i = 0; i < size; i++) {
         // round robin assignment of units to ranks
         if (layer_id == intID && (i >= displacements[layer_rank] && i < displacements[layer_rank] + counts[layer_rank])) {

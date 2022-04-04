@@ -47,17 +47,14 @@ static void buildSystem()
     nsSystem->addLayer(sc0LayerId, ncLayerTypeId);
     nsSystem->addLayer(sc1LayerId, ncLayerTypeId);
 
-    #if 0
-    // synchronize values across ranks
-    synchronize();
-
     // Create the tracts (connections)
     nsSystem->addBiTract(hpcLayerId, accLayerId, hpcTractTypeId);
     nsSystem->addBiTract(hpcLayerId, sc0LayerId, hpcTractTypeId);
     nsSystem->addBiTract(hpcLayerId, sc1LayerId, hpcTractTypeId);
     nsSystem->addBiTract(accLayerId, sc0LayerId, ncTractTypeId);
     nsSystem->addBiTract(accLayerId, sc1LayerId, ncTractTypeId);
-    #endif
+
+    nsSystem->synchronize();
 }
 
 /**
@@ -587,16 +584,8 @@ int main(int argc, char *argv[])
     // Initialize the system and schedule events
     //
     buildSystem();
-
-    fmt::print(nsSystem->toStr(0, "   "));
-
-    #if 0
     printSystem();
     scheduleEvents();
-
-    //nsSystem->printState();
-
-    //props.reportUnused(true);
 
     // Run the simulation
     //
@@ -610,7 +599,7 @@ int main(int argc, char *argv[])
     fmt::print("timing: {} {}\n",
                time_after_run - time_before_setup,
                time_after_run - time_before_run);
-    #endif
+
 
     MPI_Finalize();
 }
