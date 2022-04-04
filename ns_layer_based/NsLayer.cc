@@ -186,14 +186,13 @@ void NsLayer::maintain()
 uint NsLayer::getNumActive() const
 {
     uint numActive = 0;
-    uint layer_active;
     for(int i = displacements[layer_rank]; i < displacements[layer_rank]+counts[layer_rank]; i++) {
         if (activations[i]) {
             numActive++;
         }
     }
-    MPI_Allreduce(&numActive, &layer_active, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
-    return layer_active;
+    MPI_Allreduce(MPI_IN_PLACE, &numActive, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
+    return numActive;
 }
 
 void NsLayer::printState() const
@@ -213,13 +212,12 @@ uint NsLayer::getNumHits(const string &targetId) const
 {
     NsPattern target = definedPatterns.at(targetId);
     uint ret = 0;
-    uint layer_hits;
     for (auto id : target) {
         if(id >= (unsigned)displacements[layer_rank] &&
            id < (unsigned)(displacements[layer_rank] + counts[layer_rank]) && activations[id]) ret++;
     }
-    MPI_Allreduce(&ret, &layer_hits, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
-    return layer_hits;
+    MPI_Allreduce(MPI_IN_PLACE, &ret, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
+    return ret;
 }
 
 void NsLayer::printScoreHdr()
