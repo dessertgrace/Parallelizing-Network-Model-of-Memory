@@ -59,7 +59,7 @@ public:
     vector<NsUnit *> units;
     vector<uint> layer_gids;
     uint8_t *activations;
-    int size;
+    uint size;
     bool orthogonalPatterns;
     uint nextPatternUnit;
     unordered_map<string, NsPattern> definedPatterns;

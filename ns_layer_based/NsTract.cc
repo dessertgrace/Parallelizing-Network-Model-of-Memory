@@ -43,7 +43,7 @@ NsTract::NsTract(const string &id,
     CHECK_RANGE(maxE3DepotProb01h,       0.0, 1.0);
     CHECK_RANGE(maxPotProb01h,           0.0, 1.0);
 
-    for (uint i = 0; i < fromLayer->size; i++) {
+    for (uint i = 0; i < (unsigned)fromLayer->size; i++) {
         for (auto tu : toLayer->units) {
             if (fromLayer->layer_gids[i] != tu->gid) {
                 connections.push_back(new NsConnection(this, fromLayer->layer_gids[i], i, tu));

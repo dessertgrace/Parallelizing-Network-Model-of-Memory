@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
                 size_t sz;
                 try {
                     row.push_back(std::stod(tok, &sz));
-                } catch (std::invalid_argument) {
+                } catch (std::invalid_argument &) {
                     fail(fname, lineNum, "Bad double [{}]", tok);
                 }
             }

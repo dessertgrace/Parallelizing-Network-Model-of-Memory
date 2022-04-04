@@ -9,8 +9,8 @@
 
 NsLayer::NsLayer(const string &id, const string &type)
     : id(id),
-      intID(global_layer_count++),
       type(type),
+      intID(global_layer_count++),
       width(props.getUint(id + '.' + "width")),
       height(props.getUint(id + '.' + "height")),
       k(props.getDouble(id + '.' + "k")),
@@ -30,8 +30,9 @@ NsLayer::NsLayer(const string &id, const string &type)
     activations = new uint8_t [size];
     layer_names.push_back(id);
     for (uint i = 0; i < size; i++) {
-        // round robin assignment of units to ranks
-        if (layer_id == intID && (i >= displacements[layer_rank] && i < displacements[layer_rank] + counts[layer_rank])) {
+        activations[i] = 0;
+        // assignment of units to ranks based on layer
+        if (layer_id == intID && (i >= (unsigned)displacements[layer_rank] && i < (unsigned)(displacements[layer_rank] + counts[layer_rank]))) {
             units.push_back(new NsUnit(this, i, n_units_global));
         }
         gid_id_map.insert({n_units_global, id + "." + fmt::format("{:02}", i)});
@@ -93,7 +94,7 @@ const string &NsLayer::setRandomPattern()
 
 void NsLayer::clear()
 {
-    for(auto i = 0; i < size; i++) {
+    for(uint i = 0; i < size; i++) {
         activations[i] = false;
     }
 }
@@ -185,12 +186,14 @@ void NsLayer::maintain()
 uint NsLayer::getNumActive() const
 {
     uint numActive = 0;
-    for(auto i = 0; i < size; i++) {
+    uint layer_active;
+    for(int i = displacements[layer_rank]; i < displacements[layer_rank]+counts[layer_rank]; i++) {
         if (activations[i]) {
             numActive++;
         }
     }
-    return numActive;
+    MPI_Allreduce(&numActive, &layer_active, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
+    return layer_active;
 }
 
 void NsLayer::printState() const
@@ -210,10 +213,13 @@ uint NsLayer::getNumHits(const string &targetId) const
 {
     NsPattern target = definedPatterns.at(targetId);
     uint ret = 0;
+    uint layer_hits;
     for (auto id : target) {
-        if(activations[id]) ret++;
+        if(id >= (unsigned)displacements[layer_rank] &&
+           id < (unsigned)(displacements[layer_rank] + counts[layer_rank]) && activations[id]) ret++;
     }
-    return ret;
+    MPI_Allreduce(&ret, &layer_hits, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
+    return layer_hits;
 }
 
 void NsLayer::printScoreHdr()
@@ -238,8 +244,9 @@ void NsLayer::printGrid(const string &tag, const string &targetId) const
     if (targetKnown) {
         uint targetSize = definedPatterns.at(targetId).size();
         uint numHits = getNumHits(targetId);
-        uint numExtras = getNumActive() > numHits ?
-            getNumActive() - numHits : 0;
+        uint numActive = getNumActive();
+        uint numExtras = numActive > numHits ?
+            numActive - numHits : 0;
         fmt::print("{} score {} {} {} {} {}\n",
                    simTime / 24., tag, id, targetSize, numHits, numExtras);
     } else {
