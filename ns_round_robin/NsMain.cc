@@ -449,8 +449,9 @@ static const char *syntax()
  */
 int main(int argc, char *argv[])
 {
+    int provided;
     // init MPI
-    MPI_Init(&argc, &argv);
+    MPI_Init_thread(&argc, &argv, MPI_THREAD_SINGLE, &provided);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -461,11 +462,9 @@ int main(int argc, char *argv[])
     char fname_stderr[100];
     sprintf(fname_stdout, "%s_%d.raw", argv[argc-1], rank);
     sprintf(fname_stderr, "%s_%d.err", argv[argc-1], rank);
-    std::ofstream out(fname_stdout);
-    std::cout.rdbuf(out.rdbuf());
 
-    freopen(fname_stdout, "a", stdout);
-    freopen(fname_stderr, "a", stderr);
+    FILE *fout = freopen(fname_stdout, "a", stdout);
+    FILE *ferr = freopen(fname_stderr, "a", stderr);
 
     // Initialize the random number generator
     //
@@ -589,12 +588,6 @@ int main(int argc, char *argv[])
     printSystem();
     scheduleEvents();
 
-    //nsSystem->printState();
-
-    //props.reportUnused(true);
-
-    // Run the simulation
-    //
 
     double time_before_run = MPI_Wtime();
 
@@ -606,5 +599,10 @@ int main(int argc, char *argv[])
                time_after_run - time_before_setup,
                time_after_run - time_before_run);
 
+
     MPI_Finalize();
+    fclose(fout);
+    fclose(ferr);
+
+    return 0;
 }

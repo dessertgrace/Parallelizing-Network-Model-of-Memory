@@ -1,0 +1,6 @@
+title:                  HPC lesion at 1d
+
+include:                ns_common.inc
+
+hpcLesionTime:          1::00
+

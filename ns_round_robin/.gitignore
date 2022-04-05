@@ -1,0 +1,11 @@
+*.o
+*.d
+*.out
+/out/*
+ns2
+vtest
+TAGS
+lastout
+ns
+mat
+columns

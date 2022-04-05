@@ -1,0 +1,6 @@
+title:                  HPC lesion at 3d
+
+include:                ns_common.inc
+
+hpcLesionTime:          3::00
+

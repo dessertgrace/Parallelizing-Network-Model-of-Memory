@@ -1,0 +1,7 @@
+title:                  PSI-->HPC and ACC during induction
+
+include:                ns_common.inc
+
+timeStepChanges::       { 0::00 1 1::00 24 } # when, step(hours), ...
+hpcPsiTimes:            { 0 0::9 }
+accPsiTimes:            { 0 0::9 }

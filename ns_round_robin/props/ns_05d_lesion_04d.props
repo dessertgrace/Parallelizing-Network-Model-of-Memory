@@ -1,0 +1,6 @@
+title:                  HPC lesion at 4d
+
+include:                ns_common.inc
+
+hpcLesionTime:          4::00
+
