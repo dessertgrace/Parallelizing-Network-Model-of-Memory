@@ -1,5 +1,6 @@
 ENDLIST =
 
+normalize?=0
 CXX = mpicxx
 COMPFLAGS=-std=c++11 -Wall -Wextra -DOMPI_SKIP_MPICXX -pedantic -DTRACE_ON -I../include -DNORMALIZE=$(normalize)
 

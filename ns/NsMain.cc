@@ -2,6 +2,7 @@
 using std::vector;
 
 #include <getopt.h>
+#include <chrono>
 
 #include "Util.hh"
 #include "Sched.hh"
@@ -438,6 +439,9 @@ static const char *syntax()
  */
 int main(int argc, char *argv[])
 {
+
+    auto time_before_setup = std::chrono::system_clock::now();
+
     // Initialize the random number generator
     //
     Util::initRand();
@@ -562,5 +566,18 @@ int main(int argc, char *argv[])
 
     // Run the simulation
     //
+
+    auto time_before_run = std::chrono::system_clock::now();
+
     run();
+
+    auto time_after_run = std::chrono::system_clock::now();
+
+    std::chrono::duration<double> elapsed_time_setup = time_after_run - time_before_setup;
+    std::chrono::duration<double> elapsed_time_run = time_after_run - time_before_run;
+
+    fmt::print("timing: {} {}\n",
+               elapsed_time_setup.count(),
+               elapsed_time_run.count());
+
 }

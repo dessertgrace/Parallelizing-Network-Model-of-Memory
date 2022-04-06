@@ -54,7 +54,7 @@ void NsUnit::computeNewActivation()
                 numActiveInputs++;
             }
         }
-#if 0
+#if NORMALIZE
         // TODO: this didn't work, because it kills everything when there
         // are many connections. -- It would be nice to find another way to
         // handle different system sizes without twiddling parameters.
