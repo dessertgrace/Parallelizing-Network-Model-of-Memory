@@ -4,7 +4,7 @@ normalize?=0
 COMPFLAGS=-std=c++11 -Wall -Wextra -pedantic -DTRACE_ON -I../include -DNORMALIZE=$(normalize)
 
 #CXXFLAGS = $(COMPFLAGS) -O0 -g -no-pie -pg
-CXXFLAGS =  $(COMPFLAGS) -O3 -pg -no-pie -DNDEBUG 
+CXXFLAGS =  $(COMPFLAGS) -O3 -pg -no-pie -DNDEBUG
 
 #-Werror
 

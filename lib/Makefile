@@ -1,6 +1,6 @@
 ENDLIST =
 
-CXX = mpicxx
+#CXX = mpicxx
 
 #CXXFLAGS = -std=c++11 -Wall -DTRACE_ON -I../include -O0  -g -pg -no-pie -DUTIL_THREADED 
 CXXFLAGS = -std=c++11 -Wall -DTRACE_ON -I../include -O3 -pg -no-pie -DNDEBUG 
