@@ -4,23 +4,27 @@
 # parse strong scale data and create plots
 
 import os
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 
 def main():
     # strong scale cases
-    numDirs = [1, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 64, 80, 96, 112, 128, 256]
+    numDirs = [4, 8, 12, 16, 20, 24, 36, 64, 128, 256]
 
     # open last X directories in out directory
     dirsInOut = os.listdir('out/')
-
+    print(dirsInOut)
     # plot out file
-    plotFile = "out/strongScalePlot.svg"
+    plotFile = "strongScalePlot.svg"
 
     # for each get time from file '0_0.raw'
     maxTimes = []
     for i in range(len(numDirs)):
-        fileName = "out/" + dirsInOut[-i] + "/0_0.raw"
+	propDir = os.listdir('out/'+dirsInOut[-i])
+        fileName = "out/" + dirsInOut[-i] + "/" + propDir[0] + "/0_0.raw"
+	print("Opening file: ", fileName)
         with open(fileName, 'r') as file:
             for line in file:
                 if line.startswith("timing"):
