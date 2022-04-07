@@ -593,7 +593,7 @@ int main(int argc, char *argv[])
 
     double time_after_run = MPI_Wtime();
     double totalTime = time_after_run - time_before_setup;
-    double recvTime;
+    double recvTime = 0.0;
 
     MPI_AllReduce(&totalTime, &recvTime, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
