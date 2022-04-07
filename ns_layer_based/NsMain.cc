@@ -595,6 +595,8 @@ int main(int argc, char *argv[])
     double totalTime = time_after_run - time_before_setup;
     double recvTime;
 
+    fmt::print("rank time: {} {}\n", world_rank, totalTime);
+
     MPI_Reduce(&totalTime, &recvTime, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
     fmt::print("timing: {} {}\n",

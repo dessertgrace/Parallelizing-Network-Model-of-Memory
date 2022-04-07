@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+#
+
+# parse strong scale data
+
+def main():
+	# open last X directories in out directory
+	# for each get time from file '0_0.raw'
+	# plot and save plot
+
+
+if __name__ == "__main__":
+    main()
