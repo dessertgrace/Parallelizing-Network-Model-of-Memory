@@ -8,6 +8,9 @@
 from __future__ import print_function
 import sys, os, time, subprocess, getopt, re, glob
 
+import plotPy
+
+
 def propVal(prop, propsFile):
     pattern = re.compile(prop + ":(.*)", re.IGNORECASE)
     for i, line in enumerate(open(propsFile)):
@@ -281,6 +284,8 @@ def main():
         else:
             outputOption = ""
             print(title)
+
+        plotPy.main(outDir, outDir, pname)
         cmd = ("./nsplot " + plotFlags + outputOption +
                " -s " + allScores +
                " -t " + '"' + title +
