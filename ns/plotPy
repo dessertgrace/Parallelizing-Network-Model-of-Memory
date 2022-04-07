@@ -7,7 +7,7 @@ import sys, os, time, getopt, re, glob
 import matplotlib.pyplot as plt
 
 
-def main(pathToStats, pathToSave, plotName):
+def plot(pathToStats, pathToSave, plotName):
     # open file
     dataFile = pathToStats + "/stats.out"
     plotFile = pathToSave + '/' + plotName + ".svg"
@@ -82,10 +82,11 @@ def main(pathToStats, pathToSave, plotName):
     E                0x7F7F7F    # Grey
     F                0xFF00FF    # Magenta
     '''
+    return
 
-
-if __name__ == "__main__":
-    pathToStats = "out"  # sys.argv[0]
-    pathToSave = "out"  # sys.argv[1]
-    plotName = "ns_01_react"  # sys.argv[2]  # = ns_01_react
-    main(pathToStats, pathToSave, plotName)
+#
+# if __name__ == "__main__":
+#     pathToStats = "out"  # sys.argv[0]
+#     pathToSave = "out"  # sys.argv[1]
+#     plotName = "ns_01_react"  # sys.argv[2]  # = ns_01_react
+#     main(pathToStats, pathToSave, plotName)
