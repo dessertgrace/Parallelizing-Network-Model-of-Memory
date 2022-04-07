@@ -1,0 +1,71 @@
+#!/usr/bin/env python
+
+# Grace Dessert, 4/6/22
+# Parse output file and generate plots to match plot shell script method
+
+import sys, os, time, getopt, re, glob
+import matplotlib.pyplot as plt
+
+
+def main(pathToStats, pathToSave, plotName):
+
+    # open file
+    dataFile = pathToStats + "/stats.out"
+    allScores = "intact_score,hpc_score,acc_score"
+
+    # outBaseDir = 'out' + '/' + time.strftime('%Y_%m_%d__%H_%M_%S')
+    # outDir = outBaseDir + '/' + pname
+    # statsFile = outDir + '/' + 'stats.out'
+
+    plotFile = pathToSave + '/' + plotName + ".svg"
+
+    # open file
+    listAll = []
+    dataLabels = []
+    with open(dataFile, 'r') as file:
+        c = 0
+        while True:
+            row = file.readline()
+            if not row:
+                break
+            if c == 0:
+                c += 1
+                rowRead = row.split()
+                for i in range(len(rowRead)):
+                    listAll.append([])
+                    dataLabels.append(rowRead[i])
+            else:
+                rowRead = row.split()
+                for i in range(len(rowRead)):
+                    listAll[i].append(rowRead[i])
+
+    # parse data into arrays
+    plt.figure()
+    plt.plot(listAll[0], listAll[1])
+    plt.savefig("output.jpg")
+
+    # plot arrays
+
+    # set labels and title
+
+    '''
+    # Plot colors
+    #
+    
+    intact_score     0x0000FF    # Blue
+    hpc_score        0x007F00    # Dark green
+    acc_score        0xFF0000    # Red
+    A                0x007F00    # Dark green
+    B                0x00007f    # Dark blue
+    C                0x000000    # Black
+    D                0x7F0000    # Brown
+    E                0x7F7F7F    # Grey
+    F                0xFF00FF    # Magenta
+    '''
+
+
+if __name__ == "__main__":
+    pathToStats = "out/2022_04_06__15_29_11/ns_01_react"  #sys.argv[0]
+    pathToSave = "out"  #sys.argv[1]
+    plotName = "ns_01_react"  #sys.argv[2]  # = ns_01_react
+    main(pathToStats, pathToSave, plotName)
