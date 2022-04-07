@@ -2,7 +2,7 @@ ENDLIST =
 
 normalize?=0
 CXX = mpicxx
-COMPFLAGS=-std=c++11 -Wall -Wextra -pedantic -DTRACE_ON -I../include -DNORMALIZE=$(normalize)
+COMPFLAGS=-std=c++11 -Wall -Wextra -DOMPI_SKIP_MPICXX -pedantic -DTRACE_ON -I../include -DNORMALIZE=$(normalize)
 
 #CXXFLAGS = $(COMPFLAGS) -O0 -g -no-pie -pg
 CXXFLAGS =  $(COMPFLAGS) -O3 -pg -no-pie -DNDEBUG 
@@ -13,7 +13,7 @@ CXXFLAGS =  $(COMPFLAGS) -O3 -pg -no-pie -DNDEBUG
 
 VPATH =  ../lib ../include
 
-LDFLAGS = -pthread -pg -no-pie
+LDFLAGS = -pthread -no-pie
 LDPATH = -L ../lib
 LDLIBS = -lutil
 

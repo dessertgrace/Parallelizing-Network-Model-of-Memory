@@ -23,7 +23,7 @@ inhibIncr:                0.05
 orthogonalPatterns:       true
 
 W:                        25
-H:                        10
+H:                        25
 K:                        .2
 
 hpc.width:                W
