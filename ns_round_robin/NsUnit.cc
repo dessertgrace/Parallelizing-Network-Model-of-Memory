@@ -29,8 +29,11 @@ uint8_t NsUnit::activationFunction(double netInput)
         MathUtil::asigmoid(netInput, actFuncK, layer->inhibition);
     //infoTrace("XXX {}\n", netInput);
 
-    uint8_t ret = Util::randDouble(0.0, 1.0) < probOfActivation;
-
+    #if STOCHASTIC
+    double ret = Util::randDouble(0.0, 1.0) < probOfActivation;
+    #else
+    double ret = 0.5 < probOfActivation;
+    #endif
     //fmt::print("activationFunction: {} {}\n",
     //           netInput - layer->inhibition, ret);
     

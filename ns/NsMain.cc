@@ -538,9 +538,9 @@ int main(int argc, char *argv[])
 
     // Print out the property value
     //
-    fmt::print("===================================\n");
-    fmt::print("{}", props.toString());
-    fmt::print("===================================\n");
+    // fmt::print("===================================\n");
+    // fmt::print("{}", props.toString());
+    // fmt::print("===================================\n");
 
     // Create the system
     //

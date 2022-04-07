@@ -174,7 +174,11 @@ void NsConnection::learn(double learnRate, uint numStimCycles, const char *tag)
             double probOfPotentiation =
                 MathUtil::asigmoid(numStimCycles, potProbK, potProbHalf) *
                 tract->maxPotProb;
+            #if STOCHASTIC
             if (Util::randDouble(0.0, 1.0) < probOfPotentiation) {
+            #else
+            if (0.5 < probOfPotentiation) {
+            #endif
                 potentiate(tag);
             }
         }

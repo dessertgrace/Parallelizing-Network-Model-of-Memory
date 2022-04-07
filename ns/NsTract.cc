@@ -174,7 +174,11 @@ void NsTract::amparTrafficking()
 void NsTract::depotentiateSome()
 {
     for (auto c: connections) {
+        #if STOCHASTIC
         if (c->isPotentiated && (Util::randDouble(0.0, 1.0) < depotProb)) {
+        #else
+        if (c->isPotentiated && (0.5 < depotProb)) {
+        #endif
             c->depotentiate("random");
         }
     }

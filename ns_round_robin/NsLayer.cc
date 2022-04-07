@@ -82,7 +82,11 @@ void NsLayer::clearPatterns()
  */
 const string &NsLayer::setRandomPattern()
 {
+    #if STOCHASTIC
     uint i = Util::randInt(0, definedPatternIds.size());
+    #else
+    uint i = 0;
+    #endif
     const string &pid = definedPatternIds[i];
     setPattern(pid);
     TRACE_INFO("Layer {}, pattern {}", id, pid);
