@@ -7,6 +7,10 @@
 
 from __future__ import print_function
 import sys, os, time, subprocess, getopt, re, glob
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 
 def propVal(prop, propsFile):
     pattern = re.compile(prop + ":(.*)", re.IGNORECASE)
@@ -280,13 +284,79 @@ def main():
             else:
                 outputOption = ""
                 print(title)
-            cmd = ("./nsplot " + plotFlags + outputOption +
-                " -s " + allScores +
-                " -t " + '"' + title +
-                '" < ' + statsFile)
-            p = subprocess.Popen(cmd, shell=True)
-            p.wait()
-            print(cmd)
+
+        plot(outDir, outDir, pname)
+        # cmd = ("./nsplot " + plotFlags + outputOption +
+        #       " -s " + allScores +
+        #       " -t " + '"' + title +
+        #       '" < ' + statsFile)
+        # p = subprocess.Popen(cmd, shell=True)
+        # p.wait()
+        # print(cmd)
+
+
+def plot(pathToStats, pathToSave, plotName):
+    # open file
+    dataFile = pathToStats + "/stats.out"
+    plotFile = pathToSave + '/' + plotName + ".svg"
+
+    allScores = ['intact_score', 'hpc_score', 'acc_score']
+
+    # outBaseDir = 'out' + '/' + time.strftime('%Y_%m_%d__%H_%M_%S')
+    # outDir = outBaseDir + '/' + pname
+    # statsFile = outDir + '/' + 'stats.out'
+
+    # open file
+    listAll = []
+    dataLabels = []
+    with open(dataFile, 'r') as file:
+        c = 0
+        while True:
+            row = file.readline()
+            if not row:
+                break
+            if c == 0:
+                c += 1
+                rowRead = row.split()
+                for i in range(len(rowRead)):
+                    listAll.append([])
+                    dataLabels.append(rowRead[i])
+            else:
+                rowRead = row.split()
+                for i in range(len(rowRead)):
+                    listAll[i].append(float(rowRead[i]))
+
+    # TO DO:
+    #   average vals, stds, and errors across all trials [0-9]
+
+    xLim = [0, 15]
+    # indexPlot = [i for i in range(len(listAll[0])) if listAll[0][i]>xLim[1]][0]
+    indexPlot = [0]
+    for i in range(1, len(listAll[0])):
+        if listAll[0][i] - listAll[0][indexPlot[-1]] >= 0.2:
+            if listAll[0][i] <= xLim[1]:
+                indexPlot.append(i)
+        # min(len(listAll[0]), listAll[0].index(allScores[0]))
+    errLabels = ["E_" + d for d in allScores]
+    # parse data into arrays
+    plt.figure(figsize=[9, 5])
+    plt.grid(1, axis='y')
+    yerr0 = [listAll[dataLabels.index(errLabels[0])][i] for i in indexPlot]
+    yerr1 = [listAll[dataLabels.index(errLabels[1])][i] for i in indexPlot]
+    yerr2 = [listAll[dataLabels.index(errLabels[2])][i] for i in indexPlot]
+    plt.errorbar([listAll[0][i] for i in indexPlot],
+                 [listAll[dataLabels.index(allScores[0])][i] for i in indexPlot], yerr=yerr0, fmt='-s')
+    plt.errorbar([listAll[0][i] for i in indexPlot],
+                 [listAll[dataLabels.index(allScores[1])][i] for i in indexPlot], yerr=yerr1, fmt=':o')
+    plt.errorbar([listAll[0][i] for i in indexPlot],
+                 [listAll[dataLabels.index(allScores[2])][i] for i in indexPlot], yerr=yerr2, fmt='--d')
+
+    legendEntries = ["Baseline", "HPC lesion", "ACC lesion"]
+    plt.legend(legendEntries, loc='best')
+    plt.ylabel("Recall score 7 days after lesion")
+    plt.xlabel("Lesion time (days after training)")
+    # plt.show()
+    plt.savefig(plotFile)
         
 
 if __name__ == "__main__":
