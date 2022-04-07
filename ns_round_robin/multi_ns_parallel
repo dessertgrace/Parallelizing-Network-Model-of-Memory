@@ -284,7 +284,7 @@ def main():
                 outputOption = ""
                 print(title)
 
-        plot(outDir, outDir, pname)
+        plotOutSVG(outDir, outDir, pname)
         # cmd = ("./nsplot " + plotFlags + outputOption +
         #       " -s " + allScores +
         #       " -t " + '"' + title +
@@ -293,7 +293,7 @@ def main():
         # p.wait()
         # print(cmd)
 
-def plot(pathToStats, pathToSave, plotName):
+def plotOutSVG(pathToStats, pathToSave, plotName):
     # open file
     dataFile = pathToStats + "/stats.out"
     plotFile = pathToSave + '/' + plotName + ".svg"
