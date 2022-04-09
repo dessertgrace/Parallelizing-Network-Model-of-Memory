@@ -15,6 +15,7 @@ def main():
 
     # open last X directories in out directory
     dirsInOut = os.listdir('out/')
+    dirsInOut.sort()
     print(dirsInOut)
     # plot out file
     plotFile = "strongScalePlot.svg"
@@ -22,8 +23,8 @@ def main():
     # for each get time from file '0_0.raw'
     maxTimes = []
     for i in range(len(numDirs)):
-	propDir = os.listdir('out/'+dirsInOut[-i])
-        fileName = "out/" + dirsInOut[-i] + "/" + propDir[0] + "/0_0.raw"
+	propDir = os.listdir('out/'+dirsInOut[-i-1])
+        fileName = "out/" + dirsInOut[-i-1] + "/" + propDir[0] + "/0_0.raw"
 	print("Opening file: ", fileName)
         with open(fileName, 'r') as file:
             for line in file:
