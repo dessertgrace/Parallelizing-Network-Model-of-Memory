@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 def main():
     # weak scale cases
     numDirs = [4, 8, 12, 16, 20, 24, 36, 64, 128, 256]
+    numTrials = 10
 
     # open last X directories in out directory
     dirsInOut = os.listdir('out/')
@@ -21,19 +22,25 @@ def main():
     # plot out file
     plotFile = "weakScalePlot.svg"
 
-    # for each get time from file '0_0.raw'
+    # for each get time from file '$TRIALNUM_0.raw', where $TRIALNUM goes from 0 to #TRIALS-1
     maxTimes = []
     for i in range(len(numDirs)):
-	propDir = os.listdir('out/'+dirsInOut[-i-1])
-        fileName = "out/" + dirsInOut[-i-1] + "/" + propDir[0] + "/0_0.raw"
-	print("Opening file: ", fileName)
-        with open(fileName, 'r') as file:
-            for line in file:
-                if line.startswith("timing"):
-                    last_line = line.split(" ")
-                    maxTime = float(last_line[1])
-                    maxTimes.append(maxTime)
-                    break
+        propDir = os.listdir('out/'+dirsInOut[-i-1])
+        maxTimeAvg = []
+        for k in range(numTrials):
+            fileName = "out/" + dirsInOut[-i-1] + "/" + propDir[0] + "/" + str(k) + "_0.raw"
+            if os.path.exists(fileName):
+                print("Opening file: ", fileName)
+                with open(fileName, 'r') as file:
+                    for line in file:
+                        if line.startswith("timing"):
+                            last_line = line.split(" ")
+                            maxTimeAvg.append(float(last_line[1]))
+                            break
+            else:
+                print("NOT FOUND file: ", fileName)
+        maxTime = sum(maxTimeAvg) / len(maxTimeAvg)
+        maxTimes.append(maxTime)
     maxTimes.reverse()
 
     if len(maxTimes) != len(numDirs):
