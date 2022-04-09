@@ -2,7 +2,7 @@ ENDLIST =
 
 normalize?=0
 stochastic?=1
-COMPFLAGS=-std=c++11 -Wall -Wextra -pedantic -DTRACE_ON -I../include -DNORMALIZE=$(normalize) -DSCHOSASTIC=$(stochastic)
+COMPFLAGS=-std=c++11 -Wall -Wextra -pedantic -DTRACE_ON -I../include -DNORMALIZE=$(normalize) -DSTOCHASTIC=$(stochastic)
 
 #CXXFLAGS = $(COMPFLAGS) -O0 -g -no-pie -pg
 CXXFLAGS =  $(COMPFLAGS) -O3 -pg -no-pie -DNDEBUG
