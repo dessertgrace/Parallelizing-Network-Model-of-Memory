@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # Grace Dessert, April 7 2022
 # BME 590L Dr. Randles
-# parse strong scale data and create plots
-# NOTE based on how the outputs are extracted, only run one simulation at a time!
+# parse weak scale data and create plots
+# NOTE based on how the outputs are extracted, only run one simulation at a time! 
 
 import os
 import matplotlib
@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 
 def main():
-    # strong scale cases
+    # weak scale cases
     numDirs = [4, 8, 12, 16, 20, 24, 36, 64, 128, 256]
 
     # open last X directories in out directory
@@ -19,7 +19,7 @@ def main():
     dirsInOut.sort()
     print(dirsInOut)
     # plot out file
-    plotFile = "strongScalePlot.svg"
+    plotFile = "weakScalePlot.svg"
 
     # for each get time from file '0_0.raw'
     maxTimes = []
@@ -48,7 +48,8 @@ def main():
     # plt.legend(legendEntries, loc='best')
 
     plt.ylabel("Max Rank Runtime")
-    plt.xlabel("Num Processors")
+    plt.xlabel("Num Processors (with problem size scaling linearly)")
+    plt.title("Weak Scaling")
     # plt.show()
     plt.savefig(plotFile)
 
