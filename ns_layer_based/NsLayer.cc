@@ -190,20 +190,12 @@ void NsLayer::maintain()
 uint NsLayer::getNumActive() const
 {
     uint numActive = 0;
-    if (layer_id == intID) {
-        for(int i = displacements[layer_rank]; i < displacements[layer_rank]+counts[layer_rank]; i++) {
-            if (activations[i]) {
-                numActive++;
-            }
-        }
-        MPI_Allreduce(MPI_IN_PLACE, &numActive, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
-    } else {
-        for(int i = 0; i < size; i++) {
-            if (activations[i]) {
-                numActive++;
-            }
+    for(int i = displacements[layer_rank]; i < displacements[layer_rank]+counts[layer_rank]; i++) {
+        if (activations[i]) {
+            numActive++;
         }
     }
+    MPI_Allreduce(MPI_IN_PLACE, &numActive, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
     return numActive;
 }
 
@@ -224,19 +216,11 @@ uint NsLayer::getNumHits(const string &targetId) const
 {
     NsPattern target = definedPatterns.at(targetId);
     uint ret = 0;
-    if (layer_id == intID) {
-        for (auto id : target) {
-            if(id >= (unsigned)displacements[layer_rank] &&
-            id < (unsigned)(displacements[layer_rank] + counts[layer_rank]) && activations[id]) ret++;
-        }
-        MPI_Allreduce(MPI_IN_PLACE, &ret, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
-    } else {
-        for(auto id : target) {
-            if (activations[id]) {
-                ret++;
-            }
-        }
+    for (auto id : target) {
+        if(id >= (unsigned)displacements[layer_rank] &&
+        id < (unsigned)(displacements[layer_rank] + counts[layer_rank]) && activations[id]) ret++;
     }
+    MPI_Allreduce(MPI_IN_PLACE, &ret, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
     return ret;
 }
 
