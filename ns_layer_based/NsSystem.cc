@@ -75,9 +75,9 @@ void NsSystem::addBiTract(const string &layer1Id, const string &layer2Id,
 void NsSystem::synchronize()
 {
     int i = 0;
+    int l1, l2;
+    MPI_Comm comm;
     for (auto const& tup : synchronization_components) {
-        int l1, l2;
-        MPI_Comm comm;
         std::tie(l1, l2, comm) = tup;
         if (layer_id == l1) {
             MPI_Iallgatherv(&(layers.at(layer_names[l1])->activations[displacements[layer_rank]]),
