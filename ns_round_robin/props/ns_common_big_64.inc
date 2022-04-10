@@ -22,7 +22,7 @@ initInhibition:           0
 inhibIncr:                0.05
 orthogonalPatterns:       true
 
-W:                        5
+W:                        80
 H:                        5
 K:                        .2
 
