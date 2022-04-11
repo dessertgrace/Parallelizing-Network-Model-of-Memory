@@ -69,6 +69,7 @@ def main():
     extraPenalty="0.5"
     nsArgs=[]
     plot = False
+    caseID = "case"
     
     for opt, val in opts:
         if opt in ("-h", "--help"):
@@ -102,6 +103,8 @@ def main():
             Yflag = " -Y " + val
         elif opt in ("-y", "--penalty"):
             extraPenalty = val
+        elif opt == "--caseID":
+            caseID = val
         else:
             assert False, "unhandled option"
 
@@ -156,7 +159,8 @@ def main():
             sys.exit(2)
     else:
         if (outBaseDir == ''):
-            outBaseDir = 'out' + '/' + time.strftime('%Y_%m_%d__%H_%M_%S')
+            #outBaseDir = 'out' + '/' + time.strftime('%Y_%m_%d__%H_%M_%S')
+            outBaseDir = 'out' + '/' + caseID + '/' + time.strftime('%Y_%m_%d__%H_%M_%S')
 
         if (os.path.isdir(outBaseDir)):
             print("'" + outBaseDir +
