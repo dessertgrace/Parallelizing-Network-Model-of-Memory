@@ -21,7 +21,14 @@ def main():
     dirsInOut.sort()
     print(dirsInOut)
     # plot out file
-    plotFile = "strongScalePlot.svg"
+    plotFile = "strongScalePlot"
+    countNumFile = 0
+    while True:
+        countNumFile = countNumFile + 1
+        if os.path.exists(plotFile+".svg"):
+            plotFile = plotFile + str(countNumFile)
+            break
+    print("Saving to:", plotFile)
 
     # for each get time from file '$TRIALNUM_0.raw', where $TRIALNUM goes from 0 to #TRIALS-1
     maxTimes = []

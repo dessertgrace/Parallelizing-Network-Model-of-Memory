@@ -21,7 +21,14 @@ def main():
     dirsInOut.sort()
     print(dirsInOut)
     # plot out file
-    plotFile = "strongScalePlot.svg"
+    plotFile = "strongScalePlot"
+    countNumFile = 0
+    while True:
+        countNumFile = countNumFile + 1
+        if os.path.exists(plotFile+".svg"):
+            plotFile = plotFile + str(countNumFile)
+            break
+    print("Saving to:", plotFile)
 
     # for each get times from file '$TRIALNUM_0.raw', where $TRIALNUM goes from 0 to #TRIALS-1
     maxTimes = []
@@ -47,7 +54,7 @@ def main():
     if len(maxTimes) != len(numDirs):
         print('ERROR: number of outputs found is not equal to number of runs expected')
 
-    with open("strongScaleData.pkl", 'wb') as f:
+    with open(plotFile+".pkl", 'wb') as f:
         pickle.dump(maxTimes, f)
         
     #with open('saved_dictionary.pkl', 'rb') as f:
@@ -64,7 +71,7 @@ def main():
     plt.ylabel("Max Rank Runtime")
     plt.xlabel("Num Processors")
     # plt.show()
-    plt.savefig(plotFile)
+    plt.savefig(plotFile+".svg")
 
 
 if __name__ == "__main__":

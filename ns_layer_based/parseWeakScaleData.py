@@ -21,7 +21,14 @@ def main():
     dirsInOut.sort()
     print(dirsInOut)
     # plot out file
-    plotFile = "weakScalePlot.svg"
+    plotFile = "weakScalePlot"
+    countNumFile = 0
+    while True:
+        countNumFile = countNumFile + 1
+        if os.path.exists(plotFile+".svg"):
+            plotFile = plotFile + str(countNumFile)
+            break
+    print("Saving to:", plotFile)
 
     # for each get time from file '$TRIALNUM_0.raw', where $TRIALNUM goes from 0 to #TRIALS-1
     maxTimes = []
@@ -47,10 +54,10 @@ def main():
     if len(maxTimes) != len(numDirs):
         print('ERROR: number of outputs found is not equal to number of runs expected')
 
-    with open("weakScaleData.pkl", 'wb') as f:
+    with open(plotFile+".pkl", 'wb') as f:
         pickle.dump(maxTimes, f)
 
-    #with open('saved_dictionary.pkl', 'rb') as f:
+    # with open('saved_dictionary.pkl', 'rb') as f:
     #    loaded_dict = pickle.load(f)
 
 
@@ -66,7 +73,7 @@ def main():
     plt.xlabel("Num Processors (with problem size scaling linearly)")
     plt.title("Weak Scaling")
     # plt.show()
-    plt.savefig(plotFile)
+    plt.savefig(plotFile+".svg")
 
 
 if __name__ == "__main__":
