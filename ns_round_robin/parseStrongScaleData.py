@@ -8,11 +8,13 @@ import os
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import pickle
 
 
 def main():
     # strong scale cases
     numDirs = [4, 8, 12, 16, 20, 24, 36, 64, 128, 256]
+    numTrials = 1
 
     # open last X directories in out directory
     dirsInOut = os.listdir('out/')
@@ -41,6 +43,12 @@ def main():
         maxTime = sum(maxTimeAvg)/len(maxTimeAvg)
         maxTimes.append(maxTime)
     maxTimes.reverse()
+
+    with open('strongScaleData.pkl', 'wb') as f:
+        pickle.dump(maxTimes, f)
+        
+    #with open('saved_dictionary.pkl', 'rb') as f:
+    #    loaded_dict = pickle.load(f)
 
     if len(maxTimes) != len(numDirs):
         print('ERROR: number of outputs found is not equal to number of runs expected')

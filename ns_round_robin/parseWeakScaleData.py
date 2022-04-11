@@ -8,6 +8,7 @@ import os
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import pickle
 
 
 def main():
@@ -45,6 +46,12 @@ def main():
 
     if len(maxTimes) != len(numDirs):
         print('ERROR: number of outputs found is not equal to number of runs expected')
+
+    with open('weakScaleData.pkl', 'wb') as f:
+        pickle.dump(maxTimes, f)
+
+    #with open('saved_dictionary.pkl', 'rb') as f:
+    #    loaded_dict = pickle.load(f)
 
     # plot and save plot
     plt.figure(figsize=[9, 5])

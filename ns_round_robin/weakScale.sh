@@ -4,8 +4,8 @@
 #SBATCH --nodes=4
 #SBATCH --ntasks=256
 #SBATCH --cpus-per-task=1
-#SBATCH --time=2:00:00
-#SBATCH -p development
+#SBATCH --time=10:00:00
+#SBATCH -p normal
 #SBATCH -A TG-MDE210001
 
 ./multi_ns_parallel -p b_04 -t FATAL -f -n 4 1
