@@ -8,6 +8,7 @@
 from __future__ import print_function
 import sys, os, time, subprocess, getopt, re, glob
 import matplotlib
+
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
@@ -18,11 +19,14 @@ def propVal(prop, propsFile):
         for match in re.finditer(pattern, line):
             return match.group(1).strip()
 
+
 allScores = "intact_score,hpc_score,acc_score"
-        
-progname=''
+
+progname = ''
+
+
 def usage():
-    print('Usage: ' + progname + ' [-h] [-t trace_level] [-b] [-c caseID] [-s] [-r] [-f] ' + 
+    print('Usage: ' + progname + ' [-h] [-t trace_level] [-b] [-c caseID] [-s] [-r] [-f] ' +
           '[-d outdir] [-p propsPat] [-v] [-y penalty] [-X xrange] ' +
           '[-Y yrange] [numruns]')
     print('  -h: Print this message')
@@ -44,6 +48,7 @@ def usage():
 
     sys.exit(2)
 
+
 def main():
     progname = os.path.basename(sys.argv[0])
     try:
@@ -60,21 +65,21 @@ def main():
     small = False
     big = False
     recalc = False
-    plotToFile=False
+    plotToFile = False
     propsPatterns = []
     outBaseDir = ''
     vflag = ' '
     Xflag = ' '
     Yflag = ' -Y [0:1.2] '
     numRuns = 0
-    extraPenalty="0.5"
-    nsArgs=[]
+    extraPenalty = "0.5"
+    nsArgs = []
     remArgs = []
     plot = False
     caseID = "case"
-    
+
     for opt, val in opts:
-	print(opt+", " +val)
+        print(opt + ", " + val)
         if opt in ("-h", "--help"):
             usage()
             sys.exit()
@@ -83,7 +88,7 @@ def main():
         elif opt in ("-t", "--tl"):
             nsArgs.append("-tl")
             nsArgs.append(val)
-            
+
         elif opt in ("-b", "--big"):
             big = True
         elif opt in ("-s", "--small"):
@@ -106,7 +111,7 @@ def main():
             Yflag = " -Y " + val
         elif opt in ("-y", "--penalty"):
             extraPenalty = val
-        elif opt in ("-c",  "--caseID"):
+        elif opt in ("-c", "--caseID"):
             caseID = val
             print("caseID is " + val)
             remArgs.append("--caseID")
@@ -119,18 +124,18 @@ def main():
         sys.exit(2)
 
     if (big):
-        plotFlags="-w 1560 -h 975 -c ns.col -k off" + vflag + Xflag + Yflag
+        plotFlags = "-w 1560 -h 975 -c ns.col -k off" + vflag + Xflag + Yflag
     elif (small):
-        plotFlags="-w 280 -h 180 -c ns.col -k off" + vflag  + Xflag + Yflag
+        plotFlags = "-w 280 -h 180 -c ns.col -k off" + vflag + Xflag + Yflag
     else:
-        plotFlags="-w 450 -h 300 -c ns.col" + vflag  + Xflag + Yflag
+        plotFlags = "-w 450 -h 300 -c ns.col" + vflag + Xflag + Yflag
 
     # Extracts args containing '=' into a separate list to be passed to ns
     #
-    #print("nsArgs is ")
-    #print(nsArgs)
-    #print("args is ")
-    #print(args)
+    # print("nsArgs is ")
+    # print(nsArgs)
+    # print("args is ")
+    # print(args)
     for a in args:
         if "=" in a:
             nsArgs.append(a)
@@ -141,9 +146,9 @@ def main():
         if a in args:
             args.remove(a)
     nsArgs = ' '.join(nsArgs)
-    #print("args is now ")
-    #print(args)
-    
+    # print("args is now ")
+    # print(args)
+
     # If there's exactly one arg left, then it must be numRuns
     #
     if len(args) > 1:
@@ -182,8 +187,8 @@ def main():
                   "' already exists (not ok when numRuns != 0)")
             sys.exit(2)
 
-        os.system ("ln -sfT " + outBaseDir + " lastout")
-        
+        os.system("ln -sfT " + outBaseDir + " lastout")
+
     for propsPath in propsPathNames:
         # print("---- " + propsPath)
         # extract the props file base name
@@ -209,11 +214,11 @@ def main():
         plotFile = outBaseDir + '/' + pname + ".svg"
         # print("propsPath = " + propsPath)
         title = tcId + ' ' + propVal("title", propsPath)
-        
+
         if (numRuns != 0):
             os.makedirs(outDir)
             procs = []
-            
+
             # Run numRuns copies of ns with propsPath in parallel
             #
             for i in range(numRuns):
@@ -223,13 +228,12 @@ def main():
                 print(cmd)
                 os.system(cmd)
 
-        
             # Post-process: extract data from the [i].raw ns output file,
             # into files named [i].intact, [i].hpc, [i].acc, then combine
             # these into [i].out
             #
             for i in range(numRuns):
-                rawFile = outDir + '/' + str(i) +'_0' + '.raw'
+                rawFile = outDir + '/' + str(i) + '_0' + '.raw'
                 intactFile = outDir + '/' + str(i) + '.intact'
                 hpcFile = outDir + '/' + str(i) + '.hpc'
                 accFile = outDir + '/' + str(i) + '.acc'
@@ -238,26 +242,26 @@ def main():
                 os.system("echo time intact_hits intact_extras intact_score" +
                           "> " + intactFile)
                 os.system("awk 'BEGIN {p = " + extraPenalty + "} "
-                          "/intact-settled.*SC1/ "
-                          "{score=($6-p*$7)/$5; "
-                          "if (score<0) score = 0; "
-                          "print $1,$6,$7,score}' " +
+                                                              "/intact-settled.*SC1/ "
+                                                              "{score=($6-p*$7)/$5; "
+                                                              "if (score<0) score = 0; "
+                                                              "print $1,$6,$7,score}' " +
                           rawFile + " >> " + intactFile)
 
                 os.system("echo hpc_hits hpc_extras hpc_score > " + hpcFile)
                 os.system("awk 'BEGIN {p = " + extraPenalty + "} "
-                          "/hpc-frozen-settled.*SC1/ "
-                          "{score=($6-p*$7)/$5; "
-                          "if (score<0) score = 0; "
-                          "print $6,$7,score}' " +
+                                                              "/hpc-frozen-settled.*SC1/ "
+                                                              "{score=($6-p*$7)/$5; "
+                                                              "if (score<0) score = 0; "
+                                                              "print $6,$7,score}' " +
                           rawFile + " >> " + hpcFile)
 
                 os.system("echo acc_hits acc_extras acc_score > " + accFile)
                 os.system("awk 'BEGIN {p = " + extraPenalty + "} "
-                          "/acc-frozen-settled.*SC1/ "
-                          "{score=($6-p*$7)/$5; "
-                          "if (score<0) score = 0; "
-                          "print $6,$7,score}' " +
+                                                              "/acc-frozen-settled.*SC1/ "
+                                                              "{score=($6-p*$7)/$5; "
+                                                              "if (score<0) score = 0; "
+                                                              "print $6,$7,score}' " +
                           rawFile + " >> " + accFile)
 
                 os.system("paste " + intactFile + " " + hpcFile + " " +
@@ -305,6 +309,7 @@ def main():
                 print(title)
 
         plotOutSVG(outDir, outDir, pname)
+
         # cmd = ("./nsplot " + plotFlags + outputOption +
         #       " -s " + allScores +
         #       " -t " + '"' + title +
@@ -317,8 +322,8 @@ def main():
 def plotOutSVG(pathToStats, pathToSave, plotName):
     # open file
     dataFile = pathToStats + "/stats.out"
-    print("dataFile is")
-    print(dataFile)
+    # print("dataFile is")
+    # print(dataFile)
     plotFile = pathToSave + '/' + plotName + ".svg"
 
     allScores = ['intact_score', 'hpc_score', 'acc_score']
@@ -349,14 +354,14 @@ def plotOutSVG(pathToStats, pathToSave, plotName):
 
     # TO DO:
     #   average vals, stds, and errors across all trials [0-9]
-    print("dataLabels is")
-    print(dataLabels)
+    # print("dataLabels is")
+    # print(dataLabels)
 
     xLim = [0, 60]
-    print(len(listAll[0]))
-    print(listAll[0][i])
-    indexPlot = [i for i in range(len(listAll[0])) if listAll[0][i]>xLim[1]][0]
-    #indexPlot = [0]
+    # print(len(listAll[0]))
+    # print(listAll[0][i])
+    indexPlot = [i for i in range(len(listAll[0])) if listAll[0][i] < xLim[1]]
+    # indexPlot = indexPlot[0]
     for i in range(1, len(listAll[0])):
         if listAll[0][i] - listAll[0][indexPlot[-1]] >= 0.2:
             if listAll[0][i] <= xLim[1]:
@@ -382,7 +387,11 @@ def plotOutSVG(pathToStats, pathToSave, plotName):
     plt.xlabel("Lesion time (days after training)")
     # plt.show()
     plt.savefig(plotFile)
-        
+
 
 if __name__ == "__main__":
-    main()
+    # main()
+    pathToStats = "out/ss/123"
+    pathToSave = "out/ss/123"
+    plotName = "testPlotStats"
+    plotOutSVG(pathToStats, pathToSave, plotName)

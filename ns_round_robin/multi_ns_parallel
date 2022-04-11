@@ -107,7 +107,7 @@ def main():
             extraPenalty = val
         elif opt == "--caseID":
             caseID = val
-	    remArgs.append("--caseID")
+            remArgs.append("--caseID")
             remArgs.append(val)
         else:
             assert False, "unhandled option"
@@ -338,9 +338,9 @@ def plotOutSVG(pathToStats, pathToSave, plotName):
     # TO DO:
     #   average vals, stds, and errors across all trials [0-9]
 
-    xLim = [0, 15]
-    # indexPlot = [i for i in range(len(listAll[0])) if listAll[0][i]>xLim[1]][0]
-    indexPlot = [0]
+    xLim = [0, 60]
+    indexPlot = [i for i in range(len(listAll[0])) if listAll[0][i] < xLim[1]]
+    #indexPlot = [0]
     for i in range(1, len(listAll[0])):
         if listAll[0][i] - listAll[0][indexPlot[-1]] >= 0.2:
             if listAll[0][i] <= xLim[1]:

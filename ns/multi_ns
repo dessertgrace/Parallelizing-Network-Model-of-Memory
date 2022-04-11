@@ -51,9 +51,9 @@ def usage():
 def main():
     progname = os.path.basename(sys.argv[0])
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "ht:bsrfd:p:X:Y:vy:",
+        opts, args = getopt.getopt(sys.argv[1:], "ht:bsrfd:p:c:X:Y:vy:",
                                    ["help", "tl=", "big", "small", "recalc",
-                                    "file", "dir=", "propsPat=",
+                                    "file", "dir=", "propsPat=", "caseID"
                                     "vbands", "penalty"])
     except getopt.GetoptError as err:
         print(err)
@@ -72,6 +72,7 @@ def main():
     numRuns = 0
     extraPenalty = "0.5"
     nsArgs = []
+    remArgs = []
     caseID = "case"
 
     for opt, val in opts:
@@ -104,6 +105,8 @@ def main():
             extraPenalty = val
         elif opt == "--caseID":
             caseID = val
+            remArgs.append("--caseID")
+            remArgs.append(val)
         else:
             assert False, "unhandled option"
 
@@ -124,6 +127,9 @@ def main():
         if "=" in a:
             nsArgs.append(a)
     for a in nsArgs:
+        if a in args:
+            args.remove(a)
+    for a in remArgs:
         if a in args:
             args.remove(a)
     nsArgs = ' '.join(nsArgs)
@@ -338,9 +344,9 @@ def plotOutSVG(pathToStats, pathToSave, plotName):
     # TO DO:
     #   average vals, stds, and errors across all trials [0-9]
 
-    xLim = [0, 15]
-    # indexPlot = [i for i in range(len(listAll[0])) if listAll[0][i]>xLim[1]][0]
-    indexPlot = [0]
+    xLim = [0, 60]
+    indexPlot = [i for i in range(len(listAll[0])) if listAll[0][i] < xLim[1]]
+    # indexPlot = [0]
     for i in range(1, len(listAll[0])):
         if listAll[0][i] - listAll[0][indexPlot[-1]] >= 0.2:
             if listAll[0][i] <= xLim[1]:
