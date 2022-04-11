@@ -23,11 +23,12 @@ allScores = "intact_score,hpc_score,acc_score"
 progname=''
 def usage():
     print('Usage: ' + progname + ' [-h] [-t trace_level] [-b] [-s] [-r] [-f] ' + 
-          '[-d outdir] [-p propsPat] [-v] [-y penalty] [-X xrange] ' +
+          '[-d outdir] [-p propsPat] [-v] [-c] [-y penalty] [-X xrange] ' +
           '[-Y yrange] [numruns]')
     print('  -h: Print this message')
     print('  -t: trace level passed to ns')
     print('  -b: big plot')
+    print('  -c: caseID')
     print('  -s: small plot with no legend')
     print('  -r: recalculate avg, stdev and sterr (only with numruns == 0)')
     print('  -f: plot to file(s) outdir/testcase.svg (default plotdir = outdir)')
@@ -46,9 +47,9 @@ def usage():
 def main():
     progname = os.path.basename(sys.argv[0])
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "n:ht:bsrofd:p:X:Y:vy:",
+        opts, args = getopt.getopt(sys.argv[1:], "n:ht:bsrofd:p:c:X:Y:vy:",
                                    ["nranks", "help", "tl=", "big", "small", "recalc",
-                                    "plot", "file", "dir=", "propsPat=",
+                                    "plot", "file", "dir=", "propsPat=", "caseID=",
                                     "vbands", "penalty"])
     except getopt.GetoptError as err:
         print(err)
@@ -68,6 +69,7 @@ def main():
     numRuns = 0
     extraPenalty="0.5"
     nsArgs=[]
+    remArgs = []
     plot = False
     caseID = "case"
     
@@ -105,6 +107,8 @@ def main():
             extraPenalty = val
         elif opt == "--caseID":
             caseID = val
+	    remArgs.append("--caseID")
+            remArgs.append(val)
         else:
             assert False, "unhandled option"
 
@@ -125,6 +129,9 @@ def main():
         if "=" in a:
             nsArgs.append(a)
     for a in nsArgs:
+        if a in args:
+            args.remove(a)
+    for a in remArgs:
         if a in args:
             args.remove(a)
     nsArgs = ' '.join(nsArgs)

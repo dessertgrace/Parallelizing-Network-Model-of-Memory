@@ -8,6 +8,7 @@ import os
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import pickle
 
 
 def main():
@@ -16,7 +17,7 @@ def main():
     numTrials = 10
 
     # open last X directories in out directory
-    dirsInOut = os.listdir('out/')
+    dirsInOut = os.listdir('out/ws/')
     dirsInOut.sort()
     print(dirsInOut)
     # plot out file
@@ -25,10 +26,10 @@ def main():
     # for each get time from file '$TRIALNUM_0.raw', where $TRIALNUM goes from 0 to #TRIALS-1
     maxTimes = []
     for i in range(len(numDirs)):
-        propDir = os.listdir('out/'+dirsInOut[-i-1])
+        propDir = os.listdir('out/ws/'+dirsInOut[-i-1])
         maxTimeAvg = []
         for k in range(numTrials):
-            fileName = "out/" + dirsInOut[-i-1] + "/" + propDir[0] + "/" + str(k) + "_0.raw"
+            fileName = "out/ws/" + dirsInOut[-i-1] + "/" + propDir[0] + "/" + str(k) + "_0.raw"
             if os.path.exists(fileName):
                 print("Opening file: ", fileName)
                 with open(fileName, 'r') as file:
@@ -45,6 +46,13 @@ def main():
 
     if len(maxTimes) != len(numDirs):
         print('ERROR: number of outputs found is not equal to number of runs expected')
+
+    with open("weakScaleData.pkl", 'wb') as f:
+        pickle.dump(maxTimes, f)
+
+    #with open('saved_dictionary.pkl', 'rb') as f:
+    #    loaded_dict = pickle.load(f)
+
 
     # plot and save plot
     plt.figure(figsize=[9, 5])
