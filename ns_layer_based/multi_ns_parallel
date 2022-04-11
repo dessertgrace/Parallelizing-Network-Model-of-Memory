@@ -390,8 +390,8 @@ def plotOutSVG(pathToStats, pathToSave, plotName):
 
 
 if __name__ == "__main__":
-    # main()
-    pathToStats = "out/ss/123"
-    pathToSave = "out/ss/123"
-    plotName = "testPlotStats"
-    plotOutSVG(pathToStats, pathToSave, plotName)
+    main()
+    #pathToStats = "out/ss/123"
+    #pathToSave = "out/ss/123"
+    #plotName = "testPlotStats"
+    #plotOutSVG(pathToStats, pathToSave, plotName)
