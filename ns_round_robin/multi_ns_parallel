@@ -318,6 +318,8 @@ def plotOutSVG(pathToStats, pathToSave, plotName):
     # open file
     listAll = []
     dataLabels = []
+    print(pathToStats)
+    print(dataFile)
     with open(dataFile, 'r') as file:
         c = 0
         while True:
