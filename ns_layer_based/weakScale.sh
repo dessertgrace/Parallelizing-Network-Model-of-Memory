@@ -9,7 +9,7 @@
 #SBATCH -A TG-MDE210001
 
 ./multi_ns_parallel -p b_04 -t FATAL --caseID=ws -f -n 4 1
-./multi_ns_parallel -p b_04 -t FATAL --caseID=ws -f -n 8 1
+./multi_ns_parallel -p b_08 -t FATAL --caseID=ws -f -n 8 1
 ./multi_ns_parallel -p b_12 -t FATAL --caseID=ws -f -n 12 1
 ./multi_ns_parallel -p b_16 -t FATAL --caseID=ws -f -n 16 1
 ./multi_ns_parallel -p b_20 -t FATAL --caseID=ws -f -n 20 1
