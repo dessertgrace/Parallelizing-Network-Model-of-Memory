@@ -25,6 +25,7 @@ void NsSystem::addLayer(const string &id, const string &type)
     NsLayer *layer = new NsLayer(id, type);
     std::pair<string, NsLayer *> pair(id, layer);
     layers.insert(pair);
+    layers_vec.push_back(layer);
 }
 
 /**
@@ -79,14 +80,16 @@ void NsSystem::synchronize()
         int l1, l2;
         MPI_Comm comm;
         std::tie(l1, l2, comm) = tup;
-        if (layer_id == l1) {
-            MPI_Iallgatherv(&global_activations[l1*total_units_per_layer+displacements[layer_rank]],
-                            counts[layer_rank], MPI_UINT8_T, &global_activations[l2*total_units_per_layer],
-                            counts, displacements, MPI_UINT8_T, comm, &reqs[i++]);
-        } else if (layer_id == l2) {
-            MPI_Iallgatherv(&global_activations[l2*total_units_per_layer+displacements[layer_rank]],
-                            counts[layer_rank], MPI_UINT8_T, &global_activations[l1*total_units_per_layer],
-                            counts, displacements, MPI_UINT8_T, comm, &reqs[i++]);
+        if (!(layers_vec[l1]->isFrozen || layers_vec[l2]->isFrozen)) {
+            if (layer_id == l1) {
+                MPI_Iallgatherv(&global_activations[l1*total_units_per_layer+displacements[layer_rank]],
+                                counts[layer_rank], MPI_UINT8_T, &global_activations[l2*total_units_per_layer],
+                                counts, displacements, MPI_UINT8_T, comm, &reqs[i++]);
+            } else if (layer_id == l2) {
+                MPI_Iallgatherv(&global_activations[l2*total_units_per_layer+displacements[layer_rank]],
+                                counts[layer_rank], MPI_UINT8_T, &global_activations[l1*total_units_per_layer],
+                                counts, displacements, MPI_UINT8_T, comm, &reqs[i++]);
+            }
         }
     }
     MPI_Waitall(i, reqs, MPI_STATUSES_IGNORE);

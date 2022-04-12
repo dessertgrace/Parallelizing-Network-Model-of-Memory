@@ -113,6 +113,7 @@ public:
     unordered_map<string, NsTract *> tracts;
 
     std::vector<std::tuple<int, int, MPI_Comm>> synchronization_components;
+    std::vector<NsLayer *> layers_vec;
 
     uint trainNumStimCycles;
     uint consNumStimCycles;
