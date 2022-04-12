@@ -26,7 +26,7 @@ NsConnection::NsConnection(const NsTract *tract,
       psiIsOn(false)
 {
     toUnit->inConnections.push_back(this);
-    fromUnitIsActive = &(tract->fromLayer->activations[fromUnit_layer_id]);
+    fromUnitIsActive = &global_activations[from_gid];
     auto it = gid_id_map.find(fromUnit_gid);
     if (it != gid_id_map.end()) {
         id = fmt::format("{}->{}", it->second, toUnit->id);

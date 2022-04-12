@@ -27,10 +27,10 @@ NsLayer::NsLayer(const string &id, const string &type)
       printPatterns(props.getBool("printPatterns"))
 {
     size = width * height;
-    activations = new uint8_t [size];
+    //activations = new uint8_t [size];
     layer_names.push_back(id);
     for (uint i = 0; i < size; i++) {
-        activations[i] = 0;
+        //activations[i] = 0;
         // assignment of units to ranks based on layer
         if (layer_id == intID && (i >= (unsigned)displacements[layer_rank] && i < (unsigned)(displacements[layer_rank] + counts[layer_rank]))) {
             units.push_back(new NsUnit(this, i, n_units_global));
@@ -64,7 +64,7 @@ void NsLayer::setPattern(const NsPattern &pat)
     if (!isFrozen) {
         clear();
         for (auto id : pat) {
-            activations[id] = true;
+            global_activations[(intID*size)+id] = true;
         }
     }
 }
@@ -95,7 +95,7 @@ const string &NsLayer::setRandomPattern()
 void NsLayer::clear()
 {
     for(uint i = 0; i < size; i++) {
-        activations[i] = false;
+        global_activations[(intID*size)+i] = false;
     }
 }
 
@@ -187,7 +187,7 @@ uint NsLayer::getNumActive() const
 {
     uint numActive = 0;
     for(int i = displacements[layer_rank]; i < displacements[layer_rank]+counts[layer_rank]; i++) {
-        if (activations[i]) {
+        if (global_activations[(intID*size)+i]) {
             numActive++;
         }
     }
@@ -214,7 +214,7 @@ uint NsLayer::getNumHits(const string &targetId) const
     uint ret = 0;
     for (auto id : target) {
         if(id >= (unsigned)displacements[layer_rank] &&
-           id < (unsigned)(displacements[layer_rank] + counts[layer_rank]) && activations[id]) ret++;
+           id < (unsigned)(displacements[layer_rank] + counts[layer_rank]) && global_activations[(intID*size)+id]) ret++;
     }
     MPI_Allreduce(MPI_IN_PLACE, &ret, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
     return ret;
@@ -259,7 +259,7 @@ void NsLayer::printGrid(const string &tag, const string &targetId) const
             infoTrace("|");
             for (uint col = 0; col < width; col++) {
                 infoTrace("{}{}",
-                           activations[row * width + col] ? '*' : ' ',
+                           global_activations[(intID*size)+(row * width + col)] ? '*' : ' ',
                            (col < width - 1) ? " " : "");
             }
             infoTrace("|\n");

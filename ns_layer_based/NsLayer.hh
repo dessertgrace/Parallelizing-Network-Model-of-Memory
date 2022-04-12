@@ -58,7 +58,7 @@ public:
     bool isLesioned;
     vector<NsUnit *> units;
     vector<uint> layer_gids;
-    uint8_t *activations;
+    //uint8_t *activations;
     uint size;
     bool orthogonalPatterns;
     uint nextPatternUnit;

@@ -10,7 +10,7 @@ NsUnit::NsUnit(const NsLayer *layer, uint index, uint gid)
       actFuncK(props.getDouble("actFuncK")),
       actThreshold(props.getDouble("actThreshold")),
       isFrozen(false),
-      isActive(&(layer->activations[index])),
+      isActive(&(global_activations[gid])),
       newIsActive(0),
       lastNetInput(0.0)
 {
