@@ -24,10 +24,10 @@ public:
     double getStrength() const;
     void printState() const;
     string toStr(uint iLvl = 0, const string &iStr = "   ") const;
-    bool isHebbian() const { return *fromUnitIsActive && *(toUnit->isActive); }
+    bool isHebbian() const { return global_activations[fromUnit_gid] && *(toUnit->isActive); }
 
     bool isPotentiated;
-    uint8_t *fromUnitIsActive;
+    //uint8_t *fromUnitIsActive;
     const uint fromUnit_gid;
     const uint fromUnit_layer_id;
     NsUnit *toUnit;

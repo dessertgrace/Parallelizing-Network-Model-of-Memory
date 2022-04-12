@@ -53,7 +53,7 @@ void NsUnit::computeNewActivation()
         double netInput = 0.0;
         uint numActiveInputs = 0;
         for (auto c : inConnections) {
-            if (*(c->fromUnitIsActive) && c->getStrength() > 0.0) {
+            if (global_activations[c->fromUnit_gid] && c->getStrength() > 0.0) {
                 netInput += c->getStrength();
                 numActiveInputs++;
             }
