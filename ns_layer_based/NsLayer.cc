@@ -27,6 +27,7 @@ NsLayer::NsLayer(const string &id, const string &type)
       printPatterns(props.getBool("printPatterns"))
 {
     size = width * height;
+    global_displacement = intID*size;
     //activations = new uint8_t [size];
     layer_names.push_back(id);
     for (uint i = 0; i < size; i++) {
@@ -64,7 +65,7 @@ void NsLayer::setPattern(const NsPattern &pat)
     if (!isFrozen) {
         clear();
         for (auto id : pat) {
-            global_activations[(intID*size)+id] = true;
+            global_activations[global_displacement+id] = true;
         }
     }
 }
@@ -95,7 +96,7 @@ const string &NsLayer::setRandomPattern()
 void NsLayer::clear()
 {
     for(uint i = 0; i < size; i++) {
-        global_activations[(intID*size)+i] = false;
+        global_activations[global_displacement+i] = false;
     }
 }
 
@@ -187,7 +188,7 @@ uint NsLayer::getNumActive() const
 {
     uint numActive = 0;
     for(int i = displacements[layer_rank]; i < displacements[layer_rank]+counts[layer_rank]; i++) {
-        if (global_activations[(intID*size)+i]) {
+        if (global_activations[global_displacement+i]) {
             numActive++;
         }
     }
@@ -214,7 +215,7 @@ uint NsLayer::getNumHits(const string &targetId) const
     uint ret = 0;
     for (auto id : target) {
         if(id >= (unsigned)displacements[layer_rank] &&
-           id < (unsigned)(displacements[layer_rank] + counts[layer_rank]) && global_activations[(intID*size)+id]) ret++;
+           id < (unsigned)(displacements[layer_rank] + counts[layer_rank]) && global_activations[global_displacement+id]) ret++;
     }
     MPI_Allreduce(MPI_IN_PLACE, &ret, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
     return ret;
@@ -259,7 +260,7 @@ void NsLayer::printGrid(const string &tag, const string &targetId) const
             infoTrace("|");
             for (uint col = 0; col < width; col++) {
                 infoTrace("{}{}",
-                           global_activations[(intID*size)+(row * width + col)] ? '*' : ' ',
+                           global_activations[global_displacement+(row * width + col)] ? '*' : ' ',
                            (col < width - 1) ? " " : "");
             }
             infoTrace("|\n");
