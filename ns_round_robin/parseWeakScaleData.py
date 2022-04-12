@@ -36,7 +36,7 @@ def main():
         propDir = os.listdir('out/ws/'+dirsInOut[-i-1])
         maxTimeAvg = []
         for k in range(numTrials):
-            fileName = "out/ws/" + dirsInOut[-i-1] + "/" + propDir[0] + "/" + str(k) + "_0.raw"
+            fileName = "out/ws/" + dirsInOut[-i-1] + "/" + propDir[-1] + "/" + str(k) + "_0.raw"
             if os.path.exists(fileName):
                 print("Opening file: ", fileName)
                 with open(fileName, 'r') as file:
