@@ -1,4 +1,5 @@
 #include "NsGlobals.hh"
+#include "NsSystem.hh"
 #include <iostream>
 #include <map>
 #include <mpi.h>
@@ -32,7 +33,7 @@ int layer_size;     // total number of ranks in layer
 
 int *counts;
 int *displacements;
-uint8_t *global_activations;
+//uint8_t *global_activations;
 
 std::map <uint, string> gid_id_map;
 std::vector<std::string> layer_names;
@@ -58,11 +59,35 @@ void init_counts_displacements() {
 }
 
 
+bool needs_layer_activations(int layerID) {
+    switch (layerID) {
+        case 0:
+            return true;
+        case 1:
+            return true;
+        case 2:
+            if (layer_id == 0 || layer_id == 1 || layer_id == 2) {
+                return true;
+            } else {
+                return false;
+            }
+        case 3:
+            if (layer_id == 0 || layer_id == 1 || layer_id == 3) {
+                return true;
+            } else {
+                return false;
+            }
+        default:
+            return true;
+    }
+}
+
+
 void init_mpi_components() {
     layer_id = world_rank % 4;
     MPI_Comm_split(MPI_COMM_WORLD, layer_id, world_rank, &layer_comm);
     MPI_Comm_rank(layer_comm, &layer_rank);
     MPI_Comm_size(layer_comm, &layer_size);
     init_counts_displacements();
-    global_activations = new uint8_t [total_units_per_layer * world_size];
+    //global_activations = new uint8_t [total_units_per_layer * world_size];
 }

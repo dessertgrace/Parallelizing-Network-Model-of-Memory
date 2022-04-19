@@ -24,14 +24,14 @@ NsLayer::NsLayer(const string &id, const string &type)
       isLesioned(false),
       orthogonalPatterns(props.getBool("orthogonalPatterns")),
       nextPatternUnit(0),
-      printPatterns(props.getBool("printPatterns"))
+      printPatterns(props.getBool("printPatterns")),
+      activations_on_rank(needs_layer_activations(intID))
 {
     size = width * height;
-    global_displacement = intID*size;
-    //activations = new uint8_t [size];
+    if (activations_on_rank) activations = new uint8_t [size];
     layer_names.push_back(id);
     for (uint i = 0; i < size; i++) {
-        //activations[i] = 0;
+        if (activations_on_rank) activations[i] = 0;
         // assignment of units to ranks based on layer
         if (layer_id == intID && (i >= (unsigned)displacements[layer_rank] && i < (unsigned)(displacements[layer_rank] + counts[layer_rank]))) {
             units.push_back(new NsUnit(this, i, n_units_global));
@@ -62,10 +62,10 @@ void NsLayer::makePattern(const string &patId)
 
 void NsLayer::setPattern(const NsPattern &pat)
 {
-    if (!isFrozen) {
+    if (!isFrozen && activations_on_rank) {
         clear();
         for (auto id : pat) {
-            global_activations[global_displacement+id] = true;
+            activations[id] = true;
         }
     }
 }
@@ -95,8 +95,10 @@ const string &NsLayer::setRandomPattern()
 
 void NsLayer::clear()
 {
-    for(uint i = 0; i < size; i++) {
-        global_activations[global_displacement+i] = false;
+    if (activations_on_rank) {
+        for(uint i = 0; i < size; i++) {
+            activations[i] = false;
+        }
     }
 }
 
@@ -187,12 +189,20 @@ void NsLayer::maintain()
 uint NsLayer::getNumActive() const
 {
     uint numActive = 0;
-    for(int i = displacements[layer_rank]; i < displacements[layer_rank]+counts[layer_rank]; i++) {
-        if (global_activations[global_displacement+i]) {
-            numActive++;
+    if (layer_id == intID) {
+        for(int i = displacements[layer_rank]; i < displacements[layer_rank]+counts[layer_rank]; i++) {
+            if (activations[i]) {
+                numActive++;
+            }
         }
+        MPI_Reduce(MPI_IN_PLACE, &numActive, 1, MPI_UINT32_T, MPI_SUM, 0, layer_comm);
+        if (intID != 0) MPI_Send(&numActive, 1, MPI_UINT32_T, 0, intID, MPI_COMM_WORLD);
     }
-    MPI_Allreduce(MPI_IN_PLACE, &numActive, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
+
+    if (world_rank == 0 && intID != 0) {
+        MPI_Recv(&numActive, 1, MPI_UINT32_T, intID, intID, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    }
+
     return numActive;
 }
 
@@ -213,11 +223,17 @@ uint NsLayer::getNumHits(const string &targetId) const
 {
     NsPattern target = definedPatterns.at(targetId);
     uint ret = 0;
-    for (auto id : target) {
-        if(id >= (unsigned)displacements[layer_rank] &&
-           id < (unsigned)(displacements[layer_rank] + counts[layer_rank]) && global_activations[global_displacement+id]) ret++;
+    if (layer_id == intID) {
+        for (auto id : target) {
+            if(id >= (unsigned)displacements[layer_rank] &&
+            id < (unsigned)(displacements[layer_rank] + counts[layer_rank]) && activations[id]) ret++;
+        }
+        MPI_Reduce(MPI_IN_PLACE, &ret, 1, MPI_UINT32_T, MPI_SUM, 0, layer_comm);
+        if (intID != 0) MPI_Send(&ret, 1, MPI_UINT32_T, 0, intID, MPI_COMM_WORLD);
     }
-    MPI_Allreduce(MPI_IN_PLACE, &ret, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
+    if (world_rank == 0  && intID != 0) {
+        MPI_Recv(&ret, 1, MPI_UINT32_T, intID, intID, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    }
     return ret;
 }
 
@@ -254,19 +270,22 @@ void NsLayer::printGrid(const string &tag, const string &targetId) const
         }
     }
 
-    if (printPatterns) {
-        infoTrace("+{}+\n", string(2 * width -1, '-'));
-        for (uint row = 0; row < height; row++) {
-            infoTrace("|");
-            for (uint col = 0; col < width; col++) {
-                infoTrace("{}{}",
-                           global_activations[global_displacement+(row * width + col)] ? '*' : ' ',
-                           (col < width - 1) ? " " : "");
+    if (activations_on_rank) {
+        if (printPatterns) {
+            infoTrace("+{}+\n", string(2 * width -1, '-'));
+            for (uint row = 0; row < height; row++) {
+                infoTrace("|");
+                for (uint col = 0; col < width; col++) {
+                    infoTrace("{}{}",
+                            activations[(row * width + col)] ? '*' : ' ',
+                            (col < width - 1) ? " " : "");
+                }
+                infoTrace("|\n");
             }
-            infoTrace("|\n");
+            infoTrace("+{}+\n", string(2 * width -1, '-'));
         }
-        infoTrace("+{}+\n", string(2 * width -1, '-'));
     }
+
 }
 
 string NsLayer::toStr(uint iLvl, const string &iStr) const

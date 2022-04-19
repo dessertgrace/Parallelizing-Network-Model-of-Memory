@@ -26,7 +26,7 @@ NsConnection::NsConnection(const NsTract *tract,
       psiIsOn(false)
 {
     toUnit->inConnections.push_back(this);
-    //fromUnitIsActive = &global_activations[from_gid];
+    fromUnitIsActive = &(tract->fromLayer->activations[fromUnit_layer_id]);
     auto it = gid_id_map.find(fromUnit_gid);
     if (it != gid_id_map.end()) {
         id = fmt::format("{}->{}", it->second, toUnit->id);
@@ -107,7 +107,7 @@ void NsConnection::amparTrafficking(double cpAmparRemovalRate,
                    cpAmparRemovalRate * (numCpAmpars - minNumCpAmpars));
 
     if (isPotentiated && !psiIsOn) {
-        if (global_activations[fromUnit_gid] && *(toUnit->isActive)) {
+        if (*(fromUnitIsActive) && *(toUnit->isActive)) {
             double delta = Util::min(ciAmparInsertionRate,
                                      psdSize - (numCpAmpars + numCiAmpars));
             setNumCiAmpars(numCiAmpars + delta);
@@ -160,7 +160,7 @@ void NsConnection::stimulate(double learnRate, uint numStimCycles,
  */
 void NsConnection::learn(double learnRate, uint numStimCycles, const char *tag)
 {
-    if (global_activations[fromUnit_gid] && *(toUnit->isActive)) {
+    if (*(fromUnitIsActive) && *(toUnit->isActive)) {
         for (uint i = 0; i < numStimCycles; i++) {
             psdSize += learnRate * (maxPsdSize - psdSize);
         }

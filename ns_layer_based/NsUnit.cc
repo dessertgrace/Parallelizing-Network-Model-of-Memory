@@ -10,7 +10,7 @@ NsUnit::NsUnit(const NsLayer *layer, uint index, uint gid)
       actFuncK(props.getDouble("actFuncK")),
       actThreshold(props.getDouble("actThreshold")),
       isFrozen(false),
-      isActive(&(global_activations[gid])),
+      isActive(&(layer->activations[index])),
       newIsActive(0),
       lastNetInput(0.0)
 {
@@ -53,7 +53,7 @@ void NsUnit::computeNewActivation()
         double netInput = 0.0;
         uint numActiveInputs = 0;
         for (auto c : inConnections) {
-            if (global_activations[c->fromUnit_gid] && c->getStrength() > 0.0) {
+            if (*(c->fromUnitIsActive) && c->getStrength() > 0.0) {
                 netInput += c->getStrength();
                 numActiveInputs++;
             }

@@ -58,7 +58,7 @@ public:
     bool isLesioned;
     vector<NsUnit *> units;
     vector<uint> layer_gids;
-    //uint8_t *activations;
+    uint8_t *activations;
     uint size;
     uint global_displacement;
     bool orthogonalPatterns;
@@ -66,6 +66,7 @@ public:
     unordered_map<string, NsPattern> definedPatterns;
     vector<string> definedPatternIds;
     bool printPatterns;
+    bool activations_on_rank;
 };
 
 #endif

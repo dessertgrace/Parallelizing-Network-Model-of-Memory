@@ -82,12 +82,12 @@ void NsSystem::synchronize()
         std::tie(l1, l2, comm) = tup;
         if (!(layers_vec[l1]->isFrozen || layers_vec[l2]->isFrozen)) {
             if (layer_id == l1) {
-                MPI_Iallgatherv(&global_activations[l1*total_units_per_layer+displacements[layer_rank]],
-                                counts[layer_rank], MPI_UINT8_T, &global_activations[l2*total_units_per_layer],
+                MPI_Iallgatherv(&(layers_vec[l1]->activations[displacements[layer_rank]]),
+                                counts[layer_rank], MPI_UINT8_T, &(layers_vec[l2]->activations[0]),
                                 counts, displacements, MPI_UINT8_T, comm, &reqs[i++]);
             } else if (layer_id == l2) {
-                MPI_Iallgatherv(&global_activations[l2*total_units_per_layer+displacements[layer_rank]],
-                                counts[layer_rank], MPI_UINT8_T, &global_activations[l1*total_units_per_layer],
+                MPI_Iallgatherv(&(layers_vec[l2]->activations[displacements[layer_rank]]),
+                                counts[layer_rank], MPI_UINT8_T, &(layers_vec[l1]->activations[0]),
                                 counts, displacements, MPI_UINT8_T, comm, &reqs[i++]);
             }
         }
