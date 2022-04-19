@@ -15,19 +15,17 @@ NsConnection::NsConnection(const NsTract *tract,
                            NsUnit *toUnit)
     : forceStaticInit(initializeStatics()),
       isPotentiated(false),
-      fromUnit_gid(from_gid),
-      fromUnit_layer_id(from_layer_id),
       toUnit(toUnit),
       tract(tract),
-      id(fmt::format("{}->{}", fromUnit_gid, toUnit->id)),
+      id(fmt::format("{}->{}", from_gid, toUnit->id)),
       psdSize(minPsdSize),
       numCiAmpars(minNumCiAmpars),
       numCpAmpars(minNumCpAmpars),
       psiIsOn(false)
 {
     toUnit->inConnections.push_back(this);
-    fromUnitIsActive = &(tract->fromLayer->activations[fromUnit_layer_id]);
-    auto it = gid_id_map.find(fromUnit_gid);
+    fromUnitIsActive = &(tract->fromLayer->activations[from_layer_id]);
+    auto it = gid_id_map.find(from_gid);
     if (it != gid_id_map.end()) {
         id = fmt::format("{}->{}", it->second, toUnit->id);
     }
