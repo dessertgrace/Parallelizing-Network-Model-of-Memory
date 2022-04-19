@@ -196,7 +196,7 @@ uint NsLayer::getNumActive() const
             }
         }
         MPI_Allreduce(MPI_IN_PLACE, &numActive, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
-        if (intID != 0) MPI_Send(&numActive, 1, MPI_UINT32_T, 0, intID, MPI_COMM_WORLD);
+        if (layer_rank == 0 && intID != 0) MPI_Send(&numActive, 1, MPI_UINT32_T, 0, intID, MPI_COMM_WORLD);
     }
 
     if (world_rank == 0 && intID != 0) {
@@ -229,7 +229,7 @@ uint NsLayer::getNumHits(const string &targetId) const
             id < (unsigned)(displacements[layer_rank] + counts[layer_rank]) && activations[id]) ret++;
         }
         MPI_Allreduce(MPI_IN_PLACE, &ret, 1, MPI_UINT32_T, MPI_SUM, layer_comm);
-        if (intID != 0) MPI_Send(&ret, 1, MPI_UINT32_T, 0, intID, MPI_COMM_WORLD);
+        if (layer_rank == 0 && intID != 0) MPI_Send(&ret, 1, MPI_UINT32_T, 0, intID, MPI_COMM_WORLD);
     }
     if (world_rank == 0  && intID != 0) {
         MPI_Recv(&ret, 1, MPI_UINT32_T, intID, intID, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
