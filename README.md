@@ -3,6 +3,8 @@
 > **Authors**: Minhaj Hussain and Grace Dessert
 
 > Helfer, Peter, and Thomas R. Shultz. “A Computational Model of Systems Memory Consolidation and Reconsolidation.” Hippocampus 30, no. 7 (July 2020): 659–77. https://doi.org/10.1002/hipo.23187.
+___
+The final report is in the root directory of the repository, `Final_Report.pdf`.
 
 ---
 **NOTE** : All `make` commands (for serial and parallel implementations) can be run with the commandline argument normalize=1. This will compile the program with a basic synaptic input normalization mechanism turned on, which produces some more physiologically realistic behavior with larger network sizes. By default, normalize=0. All performance data was generated using executables built with normalize=0.
@@ -79,6 +81,6 @@ Simulations are run from within either the `ns_round_robin` or `ns_layer_based` 
 ./multi_ns_parallel -n 4 -p b_01 -t FATAL --caseID=ss -f 1
 ```
 
-Will execute a single simulation of the 25x25 neuron-per-layer network as used for strong scaling runs in our report on 4 cores. **NOTE**: you may issue this command on Stampede2 directly in your shell terminal in an _interactive session_ with at least an `-n 4` or `--ntasks=4` allocation or in a `slurm` bash script submitted from a login node using `sbatch` (again with at least an `-n 4` or `--ntasks=4` allocation).
+will execute a single simulation of the 25x25 neuron-per-layer network as used for strong scaling runs in our report on 4 cores. **NOTE**: you may issue this command on Stampede2 directly in your shell terminal in an _interactive session_ with at least an `-n 4` or `--ntasks=4` allocation or in a `slurm` bash script submitted from a login node using `sbatch` (again with at least an `-n 4` or `--ntasks=4` allocation).
 
 `-p b_01` runs simulations as specified in the properties file(s) matching props/ns_01*.props. `-t FATAL` instructs that only fatal errors be logged (**Note**: you need to specifiy a `-t` level, with a choice of  "FLOW", "DEBUG3", "DEBUG2", "DEBUG1", "DEBUG", "INFO1", "INFO", "WARN", "ERROR", "FATAL". I'm not clear on what they all do.). `-f` specifies that the graphs generated are saved to a file (in `.svg` format) instead of displayed on the screen. Finally `1` specifies that only 1 run is executed (values are averaged over multiple runs, i.e. if you ran with a number `>1`). `--caseId=ss` instructs `multi_ns_parallel` to create an output directory using the current date and time as name in `./out/ss/` into which all raw and post-processed data will be saved.
