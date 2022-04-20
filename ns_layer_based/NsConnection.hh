@@ -28,8 +28,6 @@ public:
 
     bool isPotentiated;
     uint8_t *fromUnitIsActive;
-    const uint fromUnit_gid;
-    const uint fromUnit_layer_id;
     NsUnit *toUnit;
 
 private:

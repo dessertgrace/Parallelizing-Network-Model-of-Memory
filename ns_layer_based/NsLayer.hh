@@ -60,11 +60,13 @@ public:
     vector<uint> layer_gids;
     uint8_t *activations;
     uint size;
+    uint global_displacement;
     bool orthogonalPatterns;
     uint nextPatternUnit;
     unordered_map<string, NsPattern> definedPatterns;
     vector<string> definedPatternIds;
     bool printPatterns;
+    bool activations_on_rank;
 };
 
 #endif

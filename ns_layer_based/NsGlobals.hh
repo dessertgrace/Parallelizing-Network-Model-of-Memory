@@ -35,6 +35,9 @@ extern int world_size; // MPI comm size
 extern int layer_id;       // which layer (0 -> 3) this rank belongs to
 extern int layer_rank;     // rank within the layer
 extern int layer_size;     // total number of ranks in layer
+extern int total_units_per_layer;
+//extern uint8_t *global_activations;
+
 
 extern uint n_units_global;
 extern std::map <uint, string> gid_id_map;
@@ -48,5 +51,6 @@ extern int* counts;
 extern int* displacements;
 
 void init_mpi_components();
+bool needs_layer_activations(int layerID);
 
 #endif
