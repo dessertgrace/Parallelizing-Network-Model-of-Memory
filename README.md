@@ -47,6 +47,7 @@ To generate serial run time data with the 25x25 neuron-per-layer network, we ran
 ```bash
 ./multi_ns -p b_01 -t FATAL -f 1
 ```
+on a KNL compute node on Stampede2 (`-N 1 --ntasks=1`).
 
  ---
 ## Parallel Code
