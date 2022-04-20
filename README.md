@@ -75,7 +75,7 @@ make
 This will create executables `ns`, `mat` and `columns` in the `/ns_layer_based` and `/ns_round_robin` directories, respectively. `ns` is the main executable.
 
 ### Run
-Simulations are run from within either the `ns_round_robin` or `ns_layer_based` directory using the `multi_ns_parallel` `Python` script. Note: you may need to make the file executable by running `chmod +x multi_ns_parallel` before being able to run the commands below. The script uses `Python`'s `os` module, specifically the `os.system()` method to execute `mpirun` commands and instantiate and run parallel instances of the network model. For example:
+Simulations are run from within either the `ns_round_robin` or `ns_layer_based` directory (depending on the parallelization scheme you want to run) using the `multi_ns_parallel` `Python` script. Note: you may need to make the file executable by running `chmod +x multi_ns_parallel` before being able to run the commands below. The script uses `Python`'s `os` module, specifically the `os.system()` method to execute `mpirun` commands and instantiate and run parallel instances of the network model. For example:
 
 ```bash
 ./multi_ns_parallel -n 4 -p b_01 -t FATAL --caseID=ss -f 1
@@ -83,4 +83,15 @@ Simulations are run from within either the `ns_round_robin` or `ns_layer_based` 
 
 will execute a single simulation of the 25x25 neuron-per-layer network as used for strong scaling runs in our report on 4 cores. **NOTE**: you may issue this command on Stampede2 directly in your shell terminal in an _interactive session_ with at least an `-n 4` or `--ntasks=4` allocation or in a `slurm` bash script submitted from a login node using `sbatch` (again with at least an `-n 4` or `--ntasks=4` allocation).
 
-`-p b_01` runs simulations as specified in the properties file(s) matching props/ns_01*.props. `-t FATAL` instructs that only fatal errors be logged (**Note**: you need to specifiy a `-t` level, with a choice of  "FLOW", "DEBUG3", "DEBUG2", "DEBUG1", "DEBUG", "INFO1", "INFO", "WARN", "ERROR", "FATAL". I'm not clear on what they all do.). `-f` specifies that the graphs generated are saved to a file (in `.svg` format) instead of displayed on the screen. Finally `1` specifies that only 1 run is executed (values are averaged over multiple runs, i.e. if you ran with a number `>1`). `--caseId=ss` instructs `multi_ns_parallel` to create an output directory using the current date and time as name in `./out/ss/` into which all raw and post-processed data will be saved.
+You can run the following command to start an interactive session on the `development` partition with room for a 4 task MPI program:
+
+```bash
+idev -N 1 -n 4 -t 2:00:00 -p development
+```
+You may additionally need to specify a project/allocation number with `-A <projectnumber>`. Replace `-N 1 -n 4` as necessary to run with more cores in an interactive session.
+
+`-p b_01` runs simulations as specified in the properties file(s) matching props/b_01*.props. This is the properties file that defines the runs we used in the final report. `-t FATAL` instructs that only fatal errors be logged (**Note**: you need to specifiy a `-t` level, with a choice of  "FLOW", "DEBUG3", "DEBUG2", "DEBUG1", "DEBUG", "INFO1", "INFO", "WARN", "ERROR", "FATAL". I'm not clear on what they all do.). `-f` specifies that the graphs generated are saved to a file (in `.svg` format) instead of displayed on the screen. `--caseId=ss` instructs `multi_ns_parallel` to create an output directory using the current date and time as name in `./out/ss/` into which all raw and post-processed data will be saved. Finally `1` specifies that only 1 run is executed (values are averaged over multiple runs, i.e. if you ran with a number `>1`). 
+
+### Batch Run Weak and Strong Scaling Sims
+
+From within `ns_round_robin` or `ns_layer_based` you can run all strong and weak scaling simulations at once using `sbatch strongScale.sh` and `sbatch weakScale.sh`. These will generate the data we used to produce the strong and weak scaling plots in the report, saved in `Python` `pickle` format `strongScalePlot.pkl` and `weakScalePlot.pkl`.
